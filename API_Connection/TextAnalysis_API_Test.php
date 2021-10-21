@@ -2,7 +2,7 @@
 
 function PerformTextAnalysis ($quote)
 {
-	$curl = curl_init("https://api.nlpcloud.io/v1/en_core_web_lg/entities");
+	$curl = curl_init("https://api.nlpcloud.io/v1/en_core_web_lg/dependencies");
 
 
 	$txtArr = array("text"=>$quote);
@@ -27,7 +27,17 @@ function PerformTextAnalysis ($quote)
 		echo "cURL Error #:" . $err;
 	else 
 	{
-		echo "QUOTEEEE: " . $quote;
-		echo $response;
+		$jsonResponse = GetJSONFromResponse($response);
+		return $jsonResponse['words'];
 	}
+}
+
+function GetJSONFromResponse($response)
+{
+	$startIndex = strpos($response, "words") - 2;
+	$length = strlen($response) - $startIndex;
+	echo "RESPONSE:\n" . $response . "\n\n";
+	$retStr = substr($response, $startIndex, $length);
+	echo "RETURN STRING:\n" . $retStr . "\n\n";
+	return json_decode($retStr, true);
 }
