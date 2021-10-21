@@ -8,4 +8,5 @@ $quoteURL = $quoteJSON['url'];
 echo "\n" . $quote . "\t\n" . $origin['name'] . "\t\n". $quoteURL ."\n\n";
 
 include 'TextAnalysis_API_Test.php';
-PerformTextAnalysis($quoteURL);
+$analysisJSON = PerformTextAnalysis($quote);
+// echo $analysisJSON['entities'];

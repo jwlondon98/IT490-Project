@@ -30,6 +30,7 @@ function GetQuote()
 	} 
 	else 
 	{
+		// echo $response;
 		$json = json_decode($response, true);
 		return $json;
 	}

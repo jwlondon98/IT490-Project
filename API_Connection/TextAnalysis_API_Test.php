@@ -2,33 +2,32 @@
 
 function PerformTextAnalysis ($quote)
 {
-	$curl = curl_init();
-	
-	curl_setopt_array($curl, [
-		CURLOPT_URL => "https://text-analysis12.p.rapidapi.com/ner/api/v1.1",
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_ENCODING => "",
-		CURLOPT_MAXREDIRS => 10,
-		CURLOPT_TIMEOUT => 30,
-		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-		CURLOPT_CUSTOMREQUEST => "POST",
-		CURLOPT_POSTFIELDS => "{\n    \"language\": \"english\",\n    \"text\": \" . $quote .\\n\"\n}",
-		CURLOPT_HTTPHEADER => [
-			"content-type: application/json",
-			"x-rapidapi-host: text-analysis12.p.rapidapi.com",
-			"x-rapidapi-key: 858a670fb5msh2f906f02d058ee4p133dccjsn356293c3b633"
-		],
-	]);
-	
+	$curl = curl_init("https://api.nlpcloud.io/v1/en_core_web_lg/entities");
+
+
+	$txtArr = array("text"=>$quote);
+	$data = json_encode($txtArr);
+	curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+	curl_setopt($curl, CURLOPT_HEADER, true);
+	curl_setopt($curl, CURLOPT_HTTPHEADER, [
+		"content-type: application/json",
+		"Authorization: Token 306c129e4a83f43155c16b646847edc2f069e8af"	],
+	);
+
+
 	$response = curl_exec($curl);
 	$err = curl_error($curl);
 	
 	curl_close($curl);
 	
-	if ($err) {
+	if ($err) 
 		echo "cURL Error #:" . $err;
-	} else {
+	else 
+	{
+		echo "QUOTEEEE: " . $quote;
 		echo $response;
 	}
 }
