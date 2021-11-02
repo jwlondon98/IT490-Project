@@ -17,6 +17,9 @@ namespace IT490_Project_Site.Pages
             _logger = logger;
         }
 
+        [BindProperty(SupportsGet = true)]
+        public string username { get; set; }
+
         public void OnGet()
         {
 

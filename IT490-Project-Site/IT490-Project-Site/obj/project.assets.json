@@ -6156,11 +6156,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Jordan\\Documents\\Programming\\College\\IT490\\Git Project\\IT490-Project\\Site\\IT490-Project-Site\\IT490-Project-Site\\IT490-Project-Site.csproj",
+      "projectUniqueName": "C:\\Users\\Jordan\\Documents\\Programming\\College\\IT490\\Git Project\\IT490-Project\\IT490-Project-Site\\IT490-Project-Site\\IT490-Project-Site.csproj",
       "projectName": "IT490-Project-Site",
-      "projectPath": "C:\\Users\\Jordan\\Documents\\Programming\\College\\IT490\\Git Project\\IT490-Project\\Site\\IT490-Project-Site\\IT490-Project-Site\\IT490-Project-Site.csproj",
+      "projectPath": "C:\\Users\\Jordan\\Documents\\Programming\\College\\IT490\\Git Project\\IT490-Project\\IT490-Project-Site\\IT490-Project-Site\\IT490-Project-Site.csproj",
       "packagesPath": "C:\\Users\\Jordan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Jordan\\Documents\\Programming\\College\\IT490\\Git Project\\IT490-Project\\Site\\IT490-Project-Site\\IT490-Project-Site\\obj\\",
+      "outputPath": "C:\\Users\\Jordan\\Documents\\Programming\\College\\IT490\\Git Project\\IT490-Project\\IT490-Project-Site\\IT490-Project-Site\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Jordan\\AppData\\Roaming\\NuGet\\NuGet.Config",
