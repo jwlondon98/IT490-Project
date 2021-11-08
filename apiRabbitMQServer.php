@@ -1,14 +1,14 @@
-o#!/usr/bin/php
+#!/usr/bin/php
 <?php
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
-require_once('Game Logic/LibbedQuoteMaker.php');
+require_once('LibbedQuoteMaker.php');
 
 // returns an array in which each element is a word in a random quote
 // an element can be a parts of speech tag (in all caps) which will identify
 // a blank space where text can be inputted by a player for the lib
-function getQuote()
+function getQuoteRabbit()
 {
   return MakeLibbedQuote();
 }
@@ -26,7 +26,7 @@ function requestProcessor($request)
   switch ($request['type'])
   {
     case "getQuote":
-      return doLogin();
+      return getQuoteRabbit();
   }
   
   return array("returnCode" => '0', 'message'=>"request type not found");
