@@ -154,7 +154,7 @@ function requestProcessor($request)
   return array("returnCode" => '0', 'message'=>"request type not found");
 }
 
-$server = new rabbitMQServer("testRabbitMQ.ini","testServer");
+$server = new rabbitMQServer("dbConn.ini","dbServer");
 
 $server->process_requests('requestProcessor');
 exit();
