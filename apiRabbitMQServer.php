@@ -13,7 +13,7 @@ function getQuote()
     //not sure what format the quote is going to be in, but
     //if it's in the format of a string for the quote and and
     //array for all of the removed word tokens, return a list of the tokens
-    $tokens;
+    $tokens = array();
     
     //preferably, with both of these, I should be able to just run getQuote and put that
     //into the game direcly
