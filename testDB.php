@@ -5,12 +5,23 @@ $servername = "192.168.194.228";
 $username = "eric";
 $password = "Whoop1234!";
 
-$conn = new mysqli($servername, $username, $password);
+$gameDBName = "Game";
+$regDBName = "login";
 
-if($conn->connect_error) {
-	die("Connection fialed: ".$conn->connect_error);
+try
+{
+	$conn_string = "mysql:host=$servername;dbname=$gameDBName;charset=utf8mb4";
+
+	$conn = new PDO($conn_string, $username, $password);
+	
+	echo "Connected successfully";
+}
+catch(Exception $e)
+{
+
+	var_export($e);
+	$conn = NULL;
 }
 
-echo "Connected successfully";
 
 ?>
