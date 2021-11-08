@@ -3,23 +3,14 @@ o#!/usr/bin/php
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
+require_once('Game Logic/LibbedQuoteMaker.php');
 
+// returns an array in which each element is a word in a random quote
+// an element can be a parts of speech tag (in all caps) which will identify
+// a blank space where text can be inputted by a player for the lib
 function getQuote()
 {
-
-    //gets a new random quote from the quote API
-    $quote;
-    
-    //not sure what format the quote is going to be in, but
-    //if it's in the format of a string for the quote and and
-    //array for all of the removed word tokens, return a list of the tokens
-    $tokens = array();
-    
-    //preferably, with both of these, I should be able to just run getQuote and put that
-    //into the game direcly
-
-    return array("quote" => $quote, "quoteTokens" => $tokens);
-
+  return MakeLibbedQuote();
 }
 
 
