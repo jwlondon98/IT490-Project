@@ -1,26 +1,33 @@
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Web;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace IT490_Project_Site.Pages
+namespace IT490_Project_Site
 {
-    public class PlayModel : PageModel
+    public class PlayModeController : Controller
     {
-        public void OnGet()
+        public IActionResult Index()
         {
+            return View();
         }
 
-        public void OnMode1Click()
+        public void OnGet()
         {
-            Console.WriteLine("hiii");
+            Console.WriteLine("testtt");
             SendModeGetRequest("mode1");
+        }
+
+        public async void OnMode1Click()
+        {
+            var client = new HttpClient();
+            string path = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}{this.Request.Path}";
+            Console.WriteLine("PATH: " + path);
         }
 
         private async void SendModeGetRequest(string modeName)
