@@ -1,0 +1,28 @@
+﻿@page
+@model IT490_Project_Site.Pages.FriendsModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <h1>Friends</h1>
+
+    <div>
+        <p>Enter the username of a desired friend:</p>
+        <span>
+            <input type="text"/>
+            <input type="button" value="Add Friend"/>
+        </span>
+    </div>
+    <br />
+    <div>
+        <h2>List</h2>
+        <div class="friendsList">
+            @for (int i = 0; i < 100; i++)
+            { 
+                <p>Friend Name</p>
+            }
+        </div>
+    </div>
+</body>
