@@ -56,7 +56,7 @@ class Button
     }
     isInside(pos)
     {
-        return pos.x > this.x && pos.x < this.x+this.w && pos.y < this.y+this.h && pos.y > this.y
+        return pos.x > this.x && pos.x < this.x+this.w && pos.y < this.y+this.h && pos.y > this.y;
     }
 
 }
@@ -101,7 +101,7 @@ function update()
             roundTime = time + 60;
             gamestate == "quotes"
             
-            $.ajax({type: "GET", url:"testLog.php"});
+            //$.ajax({type: "GET", url:"testLog.php"});
 
             //$.ajax({type: "GET", url: "testLog.php"});
             
