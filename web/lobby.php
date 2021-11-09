@@ -1,3 +1,4 @@
 <?php
-echo "Test lobby";
+echo "testlobby";
+
 ?>

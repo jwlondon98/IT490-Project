@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 (function() {
     var startingTime = new Date().getTime();
     // Load the script
@@ -92,6 +94,18 @@ function update()
 {
     time = Math.floor(Date.now() / 1000);
     
+    if(!nextQuote)
+    {
+        /*
+        $.ajax({type: "GET", url:"apiClient.php",
+            success:function(data)
+            {
+                alert(data);
+            }
+        });
+        */
+    }
+    
     //setup test ajax request
     
     if (time >= roundTime)
@@ -101,7 +115,11 @@ function update()
             roundTime = time + 60;
             gamestate == "quotes"
             
-            //$.ajax({type: "GET", url:"testLog.php"});
+            if(host)
+            {
+
+            }
+            
 
             //$.ajax({type: "GET", url: "testLog.php"});
             
@@ -176,6 +194,14 @@ function drawBaseUI()
     ctx.fillText("Time: " + timeLeft, canvas.width - 135, 25);
     ctx.closePath();
     
+    
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "#A1DCFF"
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillText(currentInput, canvas.width - 135, 150);
+    ctx.closePath();
+    
     //draw game stuff
     
 
@@ -189,8 +215,8 @@ function gameLoop()
     draw();
 }
 
-//main game setup
 
+//main game setup
 
 var gamestate = "preround";
 var gametype = "none";
@@ -201,6 +227,15 @@ var time = Math.floor(Date.now() / 1000);
 var roundTime = time + 15;
 
 
+var gamemode = document.getElementById("gameScript").getAttribute("data-gamemode");
+var lobbyid = document.getElementById("gameScript").getAttribute("data-lobbyid");
+var host = document.getElementById("gameScript").getAttribute("data-host");
+
+var currentInput = "";
+
+var nextQuote;
+
+//alert(gamemode + " " + lobbyid + " " + host);
 
 
 //drawBaseUI();
@@ -214,5 +249,20 @@ var classicButton = new Button(350, 100, 300, 100, "#2B91D9", "Classic");
 //game 'loop'
 
 canvas.addEventListener('click', function() {onClick(canvas, evt);}, false);
+
+document.addEventListener('keypress', (event) => {
+    
+    if(event.keyCode === 13)
+    {
+        currentInput = "";
+    }
+    else
+    {
+        currentInput = currentInput + event.key;
+    }
+    
+
+    
+}, false);
     
 var interval = setInterval(gameLoop, 100);
