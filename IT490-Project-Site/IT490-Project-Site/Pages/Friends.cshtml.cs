@@ -20,7 +20,7 @@ namespace IT490_Project_Site.Pages
 
         public void OnGet()
         {
-            Console.WriteLine("GET");
+            //Console.WriteLine("GET");
         }
 
         public void OnPost()
@@ -29,15 +29,13 @@ namespace IT490_Project_Site.Pages
 
         public async Task<IActionResult> OnPostAddFriend(string friendUsername)
         {
-            Console.WriteLine("friend added: " + friendUsername);
+            //DBCommunicator.AddFriend("jwlondon98", friendUsername);
 
             return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostAcceptFriend(string friendUsername)
         {
-            Console.WriteLine("friend accepted: " + friendUsername);
-
             return RedirectToPage();
         }
     }
