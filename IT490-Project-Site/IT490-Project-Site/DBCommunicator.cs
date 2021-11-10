@@ -14,7 +14,7 @@ public static class DBCommunicator
         string dirName = "IT490-Project";
         int dirIndex = path.IndexOf(dirName);
 
-        string retStr = path.Substring(0, dirIndex + dirName.Length) + "\\";
+        string retStr = path.Substring(0, dirIndex + dirName.Length) + "/";
         return retStr;
     }
 
@@ -33,17 +33,21 @@ public static class DBCommunicator
 
     private static Process RunPHP(string args)
     {
-        string phpExePath = "\"" + GetPHPExePath() + "\"";
-        string dbCommPath = "\"" + GetDBCommPath() + "\"";
+        string phpExePath =  GetPHPExePath();
+        string dbCommPath =  GetDBCommPath();
 
-        string command = phpExePath + " " + dbCommPath + " " + args;
+        // string linCmd = "gnome-terminal -x bash -ic 'cd $HOME; ls; bash'";
+        // string command = phpExePath + " " + dbCommPath + " " + args;
+        string command = "php " + dbCommPath + " " + args;
+        ProcessStartInfo info = new ProcessStartInfo("/usr/bin/bash");// -x bash -c '" + command + "; exec bash'");
+        info.RedirectStandardOutput = true;
+        info.RedirectStandardInput = true;
+        info.UseShellExecute = false;
         Process process = new Process();
-        process.StartInfo.FileName = "cmd.exe";
-        process.StartInfo.CreateNoWindow = true;
-        process.StartInfo.RedirectStandardInput = true;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.StartInfo.UseShellExecute = false;
-        process.Start();
+        process.StartInfo = info;
+        bool started = process.Start();
+
+        Console.WriteLine("STARTED " + (process != null) + ": " + started);
 
         process.StandardInput.WriteLine(command);
         process.StandardInput.Flush();

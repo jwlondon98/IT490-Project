@@ -17,9 +17,15 @@ namespace IT490_Project_Site.Pages
         {
             string[] args = { email, username, password };
             Response resp = DBCommunicator.Request("register", args);
-            await resp.WaitForResponse();
-            string response = resp.response;
-            Console.WriteLine("REGISTER RECEIVED RESPONSE: " + response);
+            if (resp.process == null)
+            {
+                Console.WriteLine("process is null");
+            }
+            else
+                resp.process.StandardInput.WriteLine("this is a test");
+            // await resp.WaitForResponse();
+            // string response = resp.response;
+            // Console.WriteLine("REGISTER RECEIVED RESPONSE: " + response);
 
             return RedirectToPage();
         }

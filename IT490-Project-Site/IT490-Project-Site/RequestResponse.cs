@@ -16,6 +16,12 @@ public class Response
 
     public async Task WaitForResponse()
     {
+        if (process == null)
+        {
+            Console.WriteLine("PROCESS IS NULL");
+            return;
+        }
+
         string output = process.StandardOutput.ReadToEnd();
         string initiator = "(RESPONSE-START " + requestIndex + "): ";
         string terminator = "(RESPONSE-END " + requestIndex + ")";
