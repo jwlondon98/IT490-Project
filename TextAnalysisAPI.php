@@ -18,7 +18,7 @@ function GetPOSArray ($quote)
 	curl_setopt($curl, CURLOPT_HEADER, true);
 	curl_setopt($curl, CURLOPT_HTTPHEADER, [
 		"content-type: application/json",
-		"Authorization: Token 61d54fa228967ec48e162ae3170e8201fd777083"	],
+		"Authorization: Token 2fbd29996b463d904614a3a799aa962113677eef"	],
 	);
 
 

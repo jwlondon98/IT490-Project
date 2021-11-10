@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 (function() {
     var startingTime = new Date().getTime();
     // Load the script
@@ -85,6 +83,36 @@ function onClick(canvas, evt)
 
 }
 
+function wordWrap(str, maxWidth) {
+    var newLineStr = "\n"; done = false; res = '';
+    while (str.length > maxWidth) {                 
+        found = false;
+        // Inserts new line at first whitespace of the line
+        for (i = maxWidth - 1; i >= 0; i--) {
+            if (testWhite(str.charAt(i))) {
+                res = res + [str.slice(0, i), newLineStr].join('');
+                str = str.slice(i + 1);
+                found = true;
+                break;
+            }
+        }
+        // Inserts new line at maxWidth position, the word is too long to wrap
+        if (!found) {
+            res += [str.slice(0, maxWidth), newLineStr].join('');
+            str = str.slice(maxWidth);
+        }
+
+    }
+
+    return res + str;
+}
+
+
+function testWhite(x) {
+    var white = new RegExp(/^\s$/);
+    return white.test(x.charAt(0));
+};
+
 function think()
 {
     
@@ -94,16 +122,30 @@ function update()
 {
     time = Math.floor(Date.now() / 1000);
     
+    
     if(!nextQuote)
     {
-        /*
-        $.ajax({type: "GET", url:"apiClient.php",
+        
+        nextQuote = "getting"
+        
+            $.ajax({type: "GET", url:"apiClient.php", async:true,
             success:function(data)
             {
-                alert(data);
+                nextQuote = data;
+                
+                
+            },
+            failure:function(data)
+            {
+                nextQuote = "Failure";
+
             }
         });
-        */
+            
+    
+    //nextQuote = "Don't be NOUN . Be NOUN . Be NOUN . Be NOUN . Start VERB";
+        
+        
     }
     
     //setup test ajax request
@@ -113,34 +155,109 @@ function update()
         if(gamestate == "preround")
         {
             roundTime = time + 60;
-            gamestate == "quotes"
+            gamestate = "quotes"
             
-            if(host)
+            if(nextQuote == "getting")
             {
-
+                alert("API call failed, reloading");
+                window.location.reload();
             }
             
-
-            //$.ajax({type: "GET", url: "testLog.php"});
+            quoteList = nextQuote.split(" ");
+            quote = "";
+            var index = -1;
+            
+            for(var count = 0; count < quoteList.length; count++)
+            {
+                if(quoteList[count] == "NOUN" || quoteList[count] == "VERB")
+                {
+                    tokens[tokens.length] = quoteList[count];
+                    quoteList[count] = "___"
+                }
+                
+                if(count % 10 == 0)
+                {
+                    index++;
+                    strList[index] = "";
+                }
+                
+                strList[index] = strList[index] + quoteList[count] + " ";
+            }
+            
+            
+            
+             
             
         }
-        if(gamestate == "quotes")
+        else if(gamestate == "quotes")
         {
             roundTime = time + 60;
-            gamestate == "judge"
+            gamestate = "judge"
+            currentInput = "";
         }
-        if(gamestate == "judge")
+        else if(gamestate == "judge")
         {
             roundTime = time + 10;
-            gamestate == "endround"
+            gamestate = "preround"
+            
+            //reset all variables
+
+            currentInput = "";
+
+            nextQuote = null;
+            quote = null;
+            quoteList = null;
+
+            showtoken = 0;
+
+            finishedQuote = [];
+
+            tokens = [];
+            currentToken = 0;
+            strList = [];
+            response = [];
         }
-        if(gamestate == "endround")
-        {
-            roundTime = time + 15;
-            gamestate == "preround"
-        }
-        
+
     }
+    
+    if(gamestate == "quotes" && response.length == tokens.length)
+    {
+            roundTime = time + 15;
+            gamestate = "judge"
+            currentInput = "";
+            
+            //finishedQuote = "";
+            index = -1;
+            var tokensUsed = 0;
+            //quoteList = nextQuote.split(" ");
+            
+            
+            for(var count = 0; count < quoteList.length; count++)
+            {
+                //alert("test");
+                
+                if(count % 10 == 0)
+                {
+                    index++;
+                    finishedQuote[index] = "";
+                }
+                
+                if(quoteList[count] == "___")
+                {
+
+                    finishedQuote[index] = finishedQuote[index] + response[tokensUsed] + " ";
+                    //finishedQuote[index] = finishedQuote[index] + quoteList[count] + " ";
+                    
+                    tokensUsed++;
+                }
+                else
+                {
+                    //alert(quoteList[count]);
+                    finishedQuote[index] = finishedQuote[index] + quoteList[count] + " ";
+                }
+                
+            }
+        }
 }
 
 function drawBaseUI()
@@ -187,6 +304,7 @@ function drawBaseUI()
     
     var timeLeft = roundTime - time;
     
+    ctx.beginPath();
     ctx.font = "30px Arial";
     ctx.fillStyle = "#A1DCFF"
     ctx.textBaseline = 'middle';
@@ -195,15 +313,127 @@ function drawBaseUI()
     ctx.closePath();
     
     
-    ctx.font = "30px Arial";
-    ctx.fillStyle = "#A1DCFF"
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'left';
-    ctx.fillText(currentInput, canvas.width - 135, 150);
-    ctx.closePath();
+    if(gamemode == "classic")
+    {
+        ctx.beginPath();
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "#A1DCFF"
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        ctx.fillText("Classic", (canvas.width) / 2 + 150, 25);
+        ctx.closePath();
+    }
+    else if(gamemode == "chaos")
+    {
+        ctx.beginPath();
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "#A1DCFF"
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        ctx.fillText("Chaos", (canvas.width) / 2 + 150, 25);
+        ctx.closePath();
+    }
+    else if(gamemode == "blind")
+    {
+        ctx.beginPath();
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "#A1DCFF"
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+        ctx.fillText("Blind", (canvas.width) / 2 + 150, 25);
+        ctx.closePath();
+    }
+
+    
+    if(tokens[showtoken])
+    {
+        if(gamemode == "classic" || gamemode == "chaos")
+        {
+            ctx.beginPath();
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "#000000"
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'left';
+            ctx.fillText(tokens[showtoken] + ": " + currentInput, 300 + 25, 550);
+            ctx.closePath();
+        }
+        else if(gamemode == "blind")
+        {
+            ctx.beginPath();
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "#000000"
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'left';
+            ctx.fillText("WORD: " + currentInput, 300 + 25, 550);
+            ctx.closePath();
+        }
+    }
+    
+
     
     //draw game stuff
     
+
+}
+
+function draw()
+{
+    if (gamestate == "quotes")
+    {
+        //alert("test");
+        
+        if(gamemode == "classic")
+        {
+            for(var i = 0; i < strList.length; i++)
+            {
+                ctx.beginPath();
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "#000000";
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'center';
+                ctx.fillText(strList[i], (canvas.width) / 2 + 150, canvas.height / 2 - 100 + (30 * i));
+                ctx.closePath();
+            }
+        }
+        else if(gamemode == "chaos" || gamemode == "blind")
+        {
+            ctx.beginPath();
+            ctx.font = "50 Arial";
+            ctx.fillStyle = "#000000";
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            ctx.fillText("Write Some Words!", (canvas.width) / 2 + 150, canvas.height / 2 - 100);
+            ctx.closePath();
+        }
+        
+
+
+    }
+    else if (gamestate == "judge")
+    {
+//         alert(finishedQuote.length);
+        
+        for(var i = 0; i < finishedQuote.length; i++)
+        {
+            ctx.beginPath();
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "#000000";
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            ctx.fillText(finishedQuote[i], (canvas.width) / 2 + 150, canvas.height / 2 - 100 + (30 * i));
+            ctx.closePath();
+            
+        }
+        
+            ctx.beginPath();
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "#000000";
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            ctx.fillText("Round Won!", (canvas.width) / 2 + 150, 450);
+            ctx.closePath();
+
+    }
 
 }
 
@@ -224,25 +454,31 @@ var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
 
 var time = Math.floor(Date.now() / 1000);
-var roundTime = time + 15;
+var roundTime = time + 5;
 
 
 var gamemode = document.getElementById("gameScript").getAttribute("data-gamemode");
-var lobbyid = document.getElementById("gameScript").getAttribute("data-lobbyid");
-var host = document.getElementById("gameScript").getAttribute("data-host");
 
 var currentInput = "";
 
 var nextQuote;
+var quote;
+var quoteList;
+
+var showtoken = 0;
+
+var finishedQuote = [];
+
+var tokens = [];
+var currentToken = 0;
+var strList = [];
+var response = [];
+
 
 //alert(gamemode + " " + lobbyid + " " + host);
 
 
 //drawBaseUI();
-
-
-
-var classicButton = new Button(350, 100, 300, 100, "#2B91D9", "Classic");
 
 
 
@@ -252,13 +488,18 @@ canvas.addEventListener('click', function() {onClick(canvas, evt);}, false);
 
 document.addEventListener('keypress', (event) => {
     
-    if(event.keyCode === 13)
+    if(gamestate == "quotes")
     {
-        currentInput = "";
-    }
-    else
-    {
-        currentInput = currentInput + event.key;
+        if(event.keyCode === 13)
+        {
+            response[response.length] = currentInput;
+            currentInput = "";
+            showtoken++;
+        }
+        else
+        {
+            currentInput = currentInput + event.key;
+        }
     }
     
 
