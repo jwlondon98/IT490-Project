@@ -1,8 +1,9 @@
-#!/usr/bin/php
 <?php
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
+
+echo "DBComm says hi";
 
 $client = new rabbitMQClient("dbConn.ini","dbServer");
 
@@ -11,9 +12,9 @@ $client = new rabbitMQClient("dbConn.ini","dbServer");
 // arg 3+ |  values 
 
 if (isset($argc)) {
-	// for ($i = 0; $i < $argc; $i++) {
-	// 	echo "\n\nArgument #" . $i . " - " . $argv[$i] . "\n";
-	// }
+	 for ($i = 0; $i < $argc; $i++) {
+	 	echo "\n\nArgument #" . $i . " - " . $argv[$i] . "\n";
+	 }
 
     // switch request type
     switch ($argv[1])

@@ -1,1 +1,3 @@
-C:\Program Files (x86)\iis express\PHP\v7.1\php.exe
+/usr/bin/php
+
+# C:\Program Files (x86)\iis express\PHP\v7.1\php.exe
