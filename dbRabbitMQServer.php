@@ -276,10 +276,16 @@ $server = new rabbitMQServer("dbConn.ini","dbServer");
 $foundGame = true;
 $foundLobby = true;
 
-$GLOBALS['dbGame'] = getDB("Game");
-$GLOBALS['dbLogin'] = getDB("login");
+$GLOBALS['test'] = "Test";
 
-if (!isset($GLOBALS['dbGame'] )) 
+
+
+$dbGame = getDB("Game");
+$dbLogin = getDB("login");
+
+
+
+if (!isset($dbGame)) 
 {
     $logger->log_rabbit('Error', 'Game database in dbServer not connected. Is the server up?');
     echo 'Game database in dbServer not connected. Is the server up?'.PHP_EOL;
@@ -287,13 +293,22 @@ if (!isset($GLOBALS['dbGame'] ))
     
     //exit();
 }
-if(!isset($GLOBALS['dbLogin']))
+else
+{
+    $GLOBALS['dbGame'] = $dbGame;
+}
+
+if(!isset($dbLogin))
 {
     $logger->log_rabbit('Error', 'Login database not working in dbServer not connected. Is the server up?');
     echo 'Login database in dbServer not connected. Is the server up?'.PHP_EOL;
     //exit();
     
     $foundLobby = false;
+}
+else
+{
+    $GLOBALS['dbLogin'] = $dbLogin;
 }
 
 if($foundLobby == false || $foundGame == false)
