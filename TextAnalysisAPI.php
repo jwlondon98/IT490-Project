@@ -1,9 +1,13 @@
 <?php
 
-function PerformTextAnalysis ($quote)
+// API REF: https://docs.nlpcloud.io/?shell#introduction
+
+
+
+// Gets tagged Parts of Speech array for quote
+function GetPOSArray ($quote)
 {
 	$curl = curl_init("https://api.nlpcloud.io/v1/en_core_web_lg/dependencies");
-
 
 	$txtArr = array("text"=>$quote);
 	$data = json_encode($txtArr);
@@ -14,7 +18,7 @@ function PerformTextAnalysis ($quote)
 	curl_setopt($curl, CURLOPT_HEADER, true);
 	curl_setopt($curl, CURLOPT_HTTPHEADER, [
 		"content-type: application/json",
-		"Authorization: Token 306c129e4a83f43155c16b646847edc2f069e8af"	],
+		"Authorization: Token 2fbd29996b463d904614a3a799aa962113677eef"	],
 	);
 
 
@@ -36,8 +40,8 @@ function GetJSONFromResponse($response)
 {
 	$startIndex = strpos($response, "words") - 2;
 	$length = strlen($response) - $startIndex;
-	echo "RESPONSE:\n" . $response . "\n\n";
+	// echo "RESPONSE:\n" . $response . "\n\n";
 	$retStr = substr($response, $startIndex, $length);
-	echo "RETURN STRING:\n" . $retStr . "\n\n";
+	// echo "RETURN STRING:\n" . $retStr . "\n\n";
 	return json_decode($retStr, true);
 }
