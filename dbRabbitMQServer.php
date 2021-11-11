@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#! /usr/bin/php
 <?php
 require_once('path.inc');
 require_once('get_host_info.inc');
@@ -101,7 +101,7 @@ function doLogin($username,$password)
             $params[':session_time'] = $sessionTime;
             $params[':user_id'] = $result['user_id'];
             
-           //updates the session token and session time so we can use them to validate the user sessions
+            //updates the session token and session time so we can use them to validate the user sessions
             $stmt = $loginDB->prepare("UPDATE users SET session_token = :session_token, session_time = :session_time WHERE user_id = :user_id");
             
             $r = $stmt->execute($params);
@@ -147,19 +147,19 @@ function doValidate($sessionID)
     return array("response" => $expired);
 }
 
-// function getLobbies($gameMode, $lobbyID)
-//{
-	//$dbGame = $GLOBALS['dbGame'];
+function getLobbies($gameMode)
+{
    //returns list of all lobbies in the database with the provided gamemode
-   // Lobbies removed in sql if 0 players and 10 min run time
+   //also deletes all lobbies where the lobby was created at least 5 minutes ago
+   //and the number of players = 0
    
    //fill lobby list with the lobby ids of each lobby that fits the gamemode
-   	
-
    
-  // return array("lobbyList" => $lobbyList);
+   $lobbyList = array();
+   
+   return array("lobbyList" => $lobbyList);
 
-//}
+}
 
 function joinLobby($username, $lobbyID)
 {
@@ -273,46 +273,12 @@ function requestProcessor($request)
 $logger = new rabbitLogger("RabbitLogger/logger.ini", "testListener");
 $server = new rabbitMQServer("dbConn.ini","dbServer");
 
-$foundGame = true;
-$foundLobby = true;
+$GLOBALS['dbGame'] = getDB("Game");
+$GLOBALS['dbLogin'] = getDB("login");
 
-$GLOBALS['test'] = "Test";
-
-
-
-$dbGame = getDB("Game");
-$dbLogin = getDB("login");
-
-
-
-if (!isset($dbGame)) 
+if (!isset($dbGame) || !isset($dbLogin)) 
 {
-    $logger->log_rabbit('Error', 'Game database in dbServer not connected. Is the server up?');
-    echo 'Game database in dbServer not connected. Is the server up?'.PHP_EOL;
-    $foundGame = false;
-    
-    //exit();
-}
-else
-{
-    $GLOBALS['dbGame'] = $dbGame;
-}
-
-if(!isset($dbLogin))
-{
-    $logger->log_rabbit('Error', 'Login database not working in dbServer not connected. Is the server up?');
-    echo 'Login database in dbServer not connected. Is the server up?'.PHP_EOL;
-    //exit();
-    
-    $foundLobby = false;
-}
-else
-{
-    $GLOBALS['dbLogin'] = $dbLogin;
-}
-
-if($foundLobby == false || $foundGame == false)
-{
+    $logger->log_rabbit('Error', 'Databases in dbServer not connected. Is the server up?');
     exit();
 }
 
@@ -322,4 +288,3 @@ $logger->log_rabbit('Info', "Started db request server");
 $server->process_requests('requestProcessor');
 exit();
 ?>
-
