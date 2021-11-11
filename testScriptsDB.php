@@ -1,15 +1,14 @@
 <?php
 
 
-/*
 
 function setFriends($user_id, $friend_id)
 {
 	$dbGame = $GLOBALS['dbGame'];
 
 	$params = array();
-	$params = [':user_id'] = $user_id;
-	$params = [':friend_id'] = $friend_id;
+	$params[':user_id'] = $user_id;
+	$params[':friend_id'] = $friend_id;
 
 	$stmt = $dbGame->prepare("INSERT INTO Friends(user_id, friend_id) VALUES(:userID, :friendID)");
 	
@@ -37,8 +36,8 @@ function getFriends($user_id, $friends_id)
 	$dbGame = $GLOBALS['dbGame'];
 
 	$params = array();
-	$params = [':user_id'] = $user_id;
-        $params = [':friend_id'] = $friend_id;
+	$params[':user_id'] = $user_id;
+        $params[':friend_id'] = $friend_id;
        
        	$stmt = $dbGame->prepare("SELECT user_id, friend_id from Friends WHERE user_id = :user_id, friend_id = :friend_id");
 
@@ -54,13 +53,12 @@ function getFriends($user_id, $friends_id)
         {
                 $message = "No Friends added";
                 $success = false;
-        }
-        $get_Friends
+	}
+
         return array("get_Friends" => $get_Friends);
 }       
 
 
-*/
 
 
 ?>
