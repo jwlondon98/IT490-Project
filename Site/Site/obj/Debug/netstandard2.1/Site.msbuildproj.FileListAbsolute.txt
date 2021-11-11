@@ -1,0 +1,7 @@
+C:\Users\Jordan\source\repos\Site\Site\bin\Debug\netstandard2.1\Site.deps.json
+C:\Users\Jordan\source\repos\Site\Site\bin\Debug\netstandard2.1\Site.dll
+C:\Users\Jordan\source\repos\Site\Site\bin\Debug\netstandard2.1\Site.pdb
+C:\Users\Jordan\source\repos\Site\Site\obj\Debug\netstandard2.1\Site.msbuildproj.AssemblyReference.cache
+C:\Users\Jordan\source\repos\Site\Site\obj\Debug\netstandard2.1\Site.msbuildproj.CoreCompileInputs.cache
+C:\Users\Jordan\source\repos\Site\Site\obj\Debug\netstandard2.1\Site.dll
+C:\Users\Jordan\source\repos\Site\Site\obj\Debug\netstandard2.1\Site.pdb

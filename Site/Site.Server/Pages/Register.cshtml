@@ -1,0 +1,37 @@
+﻿@page
+@model IT490_Project_Site.Pages.RegisterModel
+@{
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <br />
+    <h1>Register</h1>
+    <br />
+    <div>
+        <form method="post">
+            <div style="max-width:40px">
+
+            <span>
+                <label>Email: </label>
+                <input type="text" name="email" />
+            </span>
+            <br />
+            <span>
+                <label>Username: </label>
+                <input type="text" name="username" />
+            </span>
+            <br />
+            <span>
+                <label>Password: </label>
+                <input type="password" name="password" />
+            </span>
+            <br />
+            <button asp-page-handler="Register">Register</button>
+            </div>
+        </form>
+    </div>
+    <br />
+</body>

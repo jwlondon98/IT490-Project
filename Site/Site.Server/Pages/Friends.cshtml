@@ -1,0 +1,57 @@
+﻿@page
+@model IT490_Project_Site.Pages.FriendsModel
+@{
+}
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <br />
+    <h1>Friends</h1>
+
+    <div>
+        <p>Enter the username of a desired friend:</p>
+        <form method="post">
+            <span>
+                <input type="text" name="friendUsername" />
+                <button asp-page-handler="AddFriend">Add Friend</button>
+            </span>
+        </form>
+    </div>
+    <br />
+    <div class="friendsPanel">
+        <div class="col1">
+            <h2>Friends List</h2>
+            <div class="friendsList">
+                @for (int i = 0; i < 100; i++)
+                {
+                    <p>Friend Name</p>
+                }
+            </div>
+        </div>
+        <div class="col2">
+            <h2> Friend Requests</h2>
+            <div class="friendsList">
+                @foreach (string friendReqName in Model.friendRequestNames)
+                {
+                    <form method="post">
+                        <span>
+                            <p>@friendReqName</p> 
+                            <input type="hidden" name="friendUsername" value="@friendReqName" />
+                            <button asp-page-handler="AcceptFriend">Accept Friend</button>
+                        </span>
+                    </form>
+                    
+                    @*<form method="post">
+                <p>testUsername</p>
+                <input type="text" name="fName" value="testUsername" disabled/>
+                <button asp-page-handler="AcceptFriend">Accept Friend</button>
+            </form>*@
+                    <br />
+                    <br />
+                }
+            </div>
+        </div>
+    </div>
+    <br />
+</body>
