@@ -203,10 +203,34 @@ function getUserStats($username)
     return array("gamesPlayed" => $gamesPlayed, "wordsFilled" => $wordsFilled, "roundsWon" => $roundsWon);
 }
 
+
 function sendChat($username, $lobbyID, $message)
 {
-    //adds message to the chat database with the username and lobby ID
-    //if possible, maybe delete chat records from lobbies that no longer exist or are too old
+/*    
+	$params = array();
+	$params = [':username'] = $username;
+	$params = [':lobbyID'] = $lobbyID;
+	$params = [':message'] = $message;
+
+	$stmt = $Game->prepare("INSERT INTO Chat(username, lobbyID, message) VALUES(:username, :lobbyID, :message)");
+	
+	$r = $stmt->execute($params);
+
+	$e = $stmet->errorInfo();
+
+	if($e[0] == "00000")
+	{
+		$message = "Chat Stored";
+		$success = true;
+	}
+	else
+	{
+		$message = "Chat Failed";
+		$success = false;
+	}
+ */
+	//adds message to the chat database with the username and lobby ID
+	//if possible, maybe delete chat records from lobbies that no longer exist or are too old
     //fill success variable as true or false if the chat was sent to the db
     
     $success;
@@ -216,11 +240,15 @@ function sendChat($username, $lobbyID, $message)
 
 function getChat($lobbyID)
 {
+/*
+	$params = array();
+	$params = [':lobbyID'] = $lobbyID;
+
     //returns most recent chats (idk, maybe 10 most recent)
     //I'll let you decide what format these should be sent back as, maybe an
     //array of arrays, with each sub array having the username of the sender and the message
     
-    
+ */  
 }
 
 
