@@ -56,6 +56,7 @@ function doRegister($email,$username,$password)
 function doLogin($username,$password)
 {
     $dbLogin = $GLOBALS['dbLogin'];
+    $logger = $GLOBALS['logger'];
     
     $login = false;
     $sessionToken;
@@ -92,20 +93,25 @@ function doLogin($username,$password)
             $sessionToken = session_create_id();
             
             //gets the current unix timestamp for validation later
-            $sessionTime = time();
+            $sessionTime = time() + 180;
             
             $login = true;
             
+            
             $params = array();
             $params[':session_token'] = $sessionToken;
-            $params[':session_time'] = $sessionTime;
+            //$params[':session_time'] = $sessionTime;
             $params[':user_id'] = $result['user_id'];
             
             //updates the session token and session time so we can use them to validate the user sessions
-            $stmt = $dbLogin->prepare("UPDATE users SET session_token = :session_token, session_time = :session_time WHERE user_id = :user_id");
+            $stmt = $dbLogin->prepare("UPDATE users SET session_token = :session_token WHERE user_id = :user_id");
             
+            echo "\npassword verified\n";
             $r = $stmt->execute($params);
             $e = $stmt->errorInfo();
+            
+            
+            echo ("ERORR: " . $e[0]);
             
             if($e[0] != "00000")
             {
@@ -129,10 +135,13 @@ function doLogin($username,$password)
     //if the login is successful, returns true, plus the session token and session time to be applied to the user
     if($login)
     {
+    	echo "login successful";
         return array("login" => $login, "sessionToken" => $sessionToken, "sessionTime" => $sessionTime);
     }
     else //just returns false, showing that the user is not logged in
     {
+    
+    	echo "login failed";
 	    return array("login" => $login);
     }
 }
@@ -277,7 +286,7 @@ $foundGame = true;
 $foundLobby = true;
 
 $GLOBALS['test'] = "Test";
-
+$GLOBALS['logger'] = $logger;
 
 
 $dbGame = getDB("Game");
