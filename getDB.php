@@ -5,8 +5,8 @@ function getDB($dbName)
 {
     
     $servername = "192.168.194.228";
-    $username = "eric";
-    $password = "Whoop1234!";
+    $username = "aymz";
+    $password = "Aaymz95aa!";
 
     $gameDBName = "Game";
     $regDBName = "login";

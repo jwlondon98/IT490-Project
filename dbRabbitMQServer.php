@@ -147,42 +147,19 @@ function doValidate($sessionID)
     return array("response" => $expired);
 }
 
-function getLobbies($gameMode, $lobbyID)
-{
-	$dbGame = $GLOBALS['dbGame'];
+// function getLobbies($gameMode, $lobbyID)
+//{
+	//$dbGame = $GLOBALS['dbGame'];
    //returns list of all lobbies in the database with the provided gamemode
    // Lobbies removed in sql if 0 players and 10 min run time
    
    //fill lobby list with the lobby ids of each lobby that fits the gamemode
-   
-	$params = array();
-	$params[':lobbyID'] = $lobbyID;
-	$params[':gamemode'] = $gamemode;
-
-	$stmt = $dbGame->prepare("SELECT lobbyID from Lobby   
-          WHERE gamemode = ");
- 
- 	$r = $stmt->execute($params);
- 71     $e = $stmt->errorInfo();
- 72 
- 73     if($e[0] != "00000")
- 74     {
- 75         $logger->log_rabbit('Error', 'Database call returned error');
- 76     }
-
-	
-		
-
-	
-
-	
-
-
+   	
 
    
-   return array("lobbyList" => $lobbyList);
+  // return array("lobbyList" => $lobbyList);
 
-}
+//}
 
 function joinLobby($username, $lobbyID)
 {
