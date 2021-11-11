@@ -13,23 +13,24 @@
     <div>
         <form method="post">
             <div style="max-width:40px">
+                <input type="hidden" name="type" value="register"/>
 
-            <span>
-                <label>Email: </label>
-                <input type="text" name="email" />
-            </span>
-            <br />
-            <span>
-                <label>Username: </label>
-                <input type="text" name="username" />
-            </span>
-            <br />
-            <span>
-                <label>Password: </label>
-                <input type="password" name="password" />
-            </span>
-            <br />
-            <button asp-page-handler="Register">Register</button>
+                <span>
+                    <label>Email: </label>
+                    <input type="text" name="email" />
+                </span>
+                <br />
+                <span>
+                    <label>Username: </label>
+                    <input type="text" name="username" />
+                </span>
+                <br />
+                <span>
+                    <label>Password: </label>
+                    <input type="password" name="password" />
+                </span>
+                <br />
+                <button asp-page-handler="DatabaseCommunicator.php">Register</button>
             </div>
         </form>
     </div>
