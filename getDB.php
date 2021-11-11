@@ -4,9 +4,9 @@
 function getDB($dbName)
 {
     
-    $servername = "192.168.194.228";
-    $username = "aymz";
-    $password = "Aaymz95aa!";
+    $servername = "localhost";
+    $username = "eric";
+    $password = "Whoop1234!";
 
     $gameDBName = "Game";
     $regDBName = "login";
@@ -15,6 +15,7 @@ function getDB($dbName)
     if($dbName != "Game" && $dbName != "login")
     {
         echo "Db name not recognized";
+        return NULL;
     }
     
     try
@@ -22,7 +23,7 @@ function getDB($dbName)
         $conn_string = "mysql:host=$servername;dbname=$dbName;charset=utf8mb4";
 
         $conn = new PDO($conn_string, $username, $password);
-        
+
         return $conn;
     }
     catch(Exception $e)
