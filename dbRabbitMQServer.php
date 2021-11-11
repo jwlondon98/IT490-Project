@@ -1,4 +1,4 @@
-#! /usr/bin/php
+#!/usr/bin/php
 <?php
 require_once('path.inc');
 require_once('get_host_info.inc');
@@ -102,7 +102,7 @@ function doLogin($username,$password)
             $params[':user_id'] = $result['user_id'];
             
             //updates the session token and session time so we can use them to validate the user sessions
-            $stmt = $loginDB->prepare("UPDATE users SET session_token = :session_token, session_time = :session_time WHERE user_id = :user_id");
+            $stmt = $dbLogin->prepare("UPDATE users SET session_token = :session_token, session_time = :session_time WHERE user_id = :user_id");
             
             $r = $stmt->execute($params);
             $e = $stmt->errorInfo();
@@ -203,34 +203,10 @@ function getUserStats($username)
     return array("gamesPlayed" => $gamesPlayed, "wordsFilled" => $wordsFilled, "roundsWon" => $roundsWon);
 }
 
-
 function sendChat($username, $lobbyID, $message)
 {
-/*    
-	$params = array();
-	$params = [':username'] = $username;
-	$params = [':lobbyID'] = $lobbyID;
-	$params = [':message'] = $message;
-
-	$stmt = $Game->prepare("INSERT INTO Chat(username, lobbyID, message) VALUES(:username, :lobbyID, :message)");
-	
-	$r = $stmt->execute($params);
-
-	$e = $stmet->errorInfo();
-
-	if($e[0] == "00000")
-	{
-		$message = "Chat Stored";
-		$success = true;
-	}
-	else
-	{
-		$message = "Chat Failed";
-		$success = false;
-	}
- */
-	//adds message to the chat database with the username and lobby ID
-	//if possible, maybe delete chat records from lobbies that no longer exist or are too old
+    //adds message to the chat database with the username and lobby ID
+    //if possible, maybe delete chat records from lobbies that no longer exist or are too old
     //fill success variable as true or false if the chat was sent to the db
     
     $success;
@@ -240,15 +216,11 @@ function sendChat($username, $lobbyID, $message)
 
 function getChat($lobbyID)
 {
-/*
-	$params = array();
-	$params = [':lobbyID'] = $lobbyID;
-
     //returns most recent chats (idk, maybe 10 most recent)
     //I'll let you decide what format these should be sent back as, maybe an
     //array of arrays, with each sub array having the username of the sender and the message
     
- */  
+    
 }
 
 
@@ -301,12 +273,46 @@ function requestProcessor($request)
 $logger = new rabbitLogger("RabbitLogger/logger.ini", "testListener");
 $server = new rabbitMQServer("dbConn.ini","dbServer");
 
-$GLOBALS['dbGame'] = getDB("Game");
-$GLOBALS['dbLogin'] = getDB("login");
+$foundGame = true;
+$foundLobby = true;
 
-if (!isset($dbGame) || !isset($dbLogin)) 
+$GLOBALS['test'] = "Test";
+
+
+
+$dbGame = getDB("Game");
+$dbLogin = getDB("login");
+
+
+
+if (!isset($dbGame)) 
 {
-    $logger->log_rabbit('Error', 'Databases in dbServer not connected. Is the server up?');
+    $logger->log_rabbit('Error', 'Game database in dbServer not connected. Is the server up?');
+    echo 'Game database in dbServer not connected. Is the server up?'.PHP_EOL;
+    $foundGame = false;
+    
+    //exit();
+}
+else
+{
+    $GLOBALS['dbGame'] = $dbGame;
+}
+
+if(!isset($dbLogin))
+{
+    $logger->log_rabbit('Error', 'Login database not working in dbServer not connected. Is the server up?');
+    echo 'Login database in dbServer not connected. Is the server up?'.PHP_EOL;
+    //exit();
+    
+    $foundLobby = false;
+}
+else
+{
+    $GLOBALS['dbLogin'] = $dbLogin;
+}
+
+if($foundLobby == false || $foundGame == false)
+{
     exit();
 }
 
