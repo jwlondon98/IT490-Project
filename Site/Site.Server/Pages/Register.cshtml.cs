@@ -12,19 +12,20 @@ namespace IT490_Project_Site.Pages
     {
         public void OnGet()
         {
+
         }
 
-        public async Task<IActionResult> OnPostRegister(string email, string username, string password)
-        {
-            Debug.WriteLine("ON POST REGISTER");
+        //public async Task<IActionResult> OnPostRegister(string email, string username, string password)
+        //{
+        //    Debug.WriteLine("ON POST REGISTER");
 
-            //string[] args = { email, username, password };
-            //Response resp = DBCommunicator.Request("register", args);
-            //await resp.WaitForResponse();
-            //string response = resp.response;
-            //Console.WriteLine("REGISTER RECEIVED RESPONSE: " + response);
+        //    //string[] args = { email, username, password };
+        //    //Response resp = DBCommunicator.Request("register", args);
+        //    //await resp.WaitForResponse();
+        //    //string response = resp.response;
+        //    //Console.WriteLine("REGISTER RECEIVED RESPONSE: " + response);
 
-            return RedirectToPage();
-        }
+        //    return RedirectToPage("DatabaseCommunicator.php");
+        //}
     }
 }

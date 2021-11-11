@@ -7,7 +7,6 @@ echo "DBComm says hi";
 
 $client = new rabbitMQClient("dbConn.ini","dbServer");
 
-
 // arg 1  |  request type
 // arg 2+ |  values 
 
@@ -25,6 +24,7 @@ if (isset($_POST['type']))
 
 function register()
 {
+    Log("register called");
     $request = array();
     $request['type'] = $_POST['type'];
     $request['email'] = $_POST['email'];
@@ -32,6 +32,25 @@ function register()
     $request['password'] = $_POST['password'];
     
     $response = $client->send_request($request);
+
+    sendResponse($response['response']);
+
+    Log("register end");
+}
+
+function sendResponse($resp)
+{
+    $ch = curl_init();
+
+    curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'GET' );
+    curl_setopt( $ch, CURLOPT_POSTFIELDS, $resp);
+
+    curl_exec($ch);
+}
+
+function Log($msg)
+{
+    echo "<script>console.log('Debug Objects: " . msg . "' );</script>";
 }
 
 ?>
