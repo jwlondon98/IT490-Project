@@ -8,9 +8,9 @@ $client = new rabbitMQClient("dbConn.ini","dbServer");
 
 $request = array();
 $request['type'] = "register";
-$request['username'] = "TestUserPoo";
-$request['password'] = "TestUserPooPass";
-$request['email'] = "TestUserPoo@gmail.com";
+$request['username'] = "peepee123";
+$request['password'] = "pea123";
+$request['email'] = "peas123@gmail.com";
 
 $response = $client->send_request($request);
 //$response = $client->publish($request);
