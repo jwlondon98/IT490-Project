@@ -102,7 +102,7 @@ function doLogin($username,$password)
             $params[':user_id'] = $result['user_id'];
             
             //updates the session token and session time so we can use them to validate the user sessions
-            $stmt = $loginDB->prepare("UPDATE users SET session_token = :session_token, session_time = :session_time WHERE user_id = :user_id");
+            $stmt = $dbLogin->prepare("UPDATE users SET session_token = :session_token, session_time = :session_time WHERE user_id = :user_id");
             
             $r = $stmt->execute($params);
             $e = $stmt->errorInfo();
@@ -322,4 +322,3 @@ $logger->log_rabbit('Info', "Started db request server");
 $server->process_requests('requestProcessor');
 exit();
 ?>
-
