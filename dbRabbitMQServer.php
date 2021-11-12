@@ -214,23 +214,104 @@ function getUserStats($username)
 
 function sendChat($username, $lobbyID, $message)
 {
-    //adds message to the chat database with the username and lobby ID
-    //if possible, maybe delete chat records from lobbies that no longer exist or are too old
-    //fill success variable as true or false if the chat was sent to the db
-    
-    $success;
-    
-    return array("success" => $success);
+    $dbGame = $GLOBALS['dbGame'];
+    $params = array();
+    $params[':username'] = $username;
+    $params[':lobbyID'] = $lobbyID;
+    $params[':message'] = $message;
+
+    $stmt = $dbGame->prepare("INSERT INTO Friends(user_id, friend_id) VALUES(:userID, :friendID)");
+
+    $r = $stmt->execute($params);
+    $e = $stmt->errorInfo();
+    if($e[0] == "00000")
+    {
+        $message = "Chat Saved";
+        $success = true;
+    }
+    else
+    {
+        $message = "No Chat saved";
+        $success = false;
+    }
+
+    return array("sendChat" => $sendChat);
 }
 
-function getChat($lobbyID)
+function getChat($username, $lobbyID, $message)
 {
-    //returns most recent chats (idk, maybe 10 most recent)
-    //I'll let you decide what format these should be sent back as, maybe an
-    //array of arrays, with each sub array having the username of the sender and the message
-    
-    
+    $dbGame = $GLOBALS['dbGame'];
+    $params = array();
+    $params[':username'] = $username;
+    $params[':lobbyID'] = $lobbyID;
+    $params[':message'] = $message;
+
+    $stmt = $dbGame->prepare("SELECT username, lobbyID, message from Chat WHERE username = :username, :lobbyID, :message");
+
+    $r = $stmt->execute($params);
+    $e = $stmt->errorInfo();
+    if($e[0] == "00000")
+    {
+        $message = "Chat Recieved";
+        $success = true;
+    }
+    else
+    {
+        $message = "No Chat Received";
+        $success = false;
+    }
+
+    return array("getChat" => $getChat);
 }
+
+function setFriends($user_id, $friend_id)
+{
+    $dbGame = $GLOBALS['dbGame'];
+    $params = array();
+    $params[':user_id'] = $user_id;
+    $params[':friend_id'] = $friend_id;
+    $stmt = $dbGame->prepare("INSERT INTO Friends(user_id, friend_id) VALUES(:userID, :friendID)");
+
+    $r = $stmt->execute($params);
+    $e = $stmt->errorInfo();
+    if($e[0] == "00000")
+    {
+        $message = "Friends added";
+        $success = true;
+    }
+    else
+    {
+        $message = "No Friends added";
+        $success = false;
+    }
+
+    return array("set_Friends" => $set_friend);
+}
+
+function getFriends($user_id, $friends_id)
+{
+	$dbGame = $GLOBALS['dbGame'];
+	$params = array();
+	$params[':user_id'] = $user_id;
+        $params[':friend_id'] = $friend_id;
+       
+       	$stmt = $dbGame->prepare("SELECT user_id, friend_id from Friends WHERE user_id = :user_id, friend_id = :friend_id");
+        $r = $stmt->execute($params);
+        $e = $stmt->errorInfo();
+        if($e[0] == "00000")
+        {
+                $message = "Friends added";
+                $success = true;
+        }
+        else
+        {
+                $message = "No Friends added";
+                $success = false;
+        }
+        
+        return array("get_Friends" => $get_Friends);
+}       
+
 
 
 function requestProcessor($request)
