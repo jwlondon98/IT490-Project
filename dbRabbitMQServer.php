@@ -220,22 +220,20 @@ function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon)
 }
 
 
-function getUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon)
+function getUserStats($user_id)
 {
-  $dbGame = $GLOBALS['dbGAME'];
+  $dbGame = $GLOBALS['dbGame'];
 
   $params = array();
   $params[':user_id'] = $user_id;
-  $params[':gamesPlayed'] = $gamesPlayed;
-  $params[':wordsPlayed'] = $wordsPlayed;
-  $params[':gamesWon'] = $gamesWon;
+ 
   
-  $stmt = $dbGame->prepare("SELECT user_id, gamesPlayed, wordsPlayed, gamesWon from userStats WHERE user_id = :user_id, gamesPlayed = :gamesPlayed, wordsPlayed = :wordsPlayed, gamesWon = :gamesWon");
+  $stmt = $dbGame->prepare("SELECT gamesPlayed, wordsPlayed, gamesWon from userStats WHERE user_id = :user_id");
 
   $r = $stmt->execute($params);
   $e = $stmt->errorInfo();
 
-  $stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stats = $stmt->fetch(PDO::FETCH_ASSOC);
   if($e[0] == "00000")
   {
     $message = "User Stats Retrieved";
@@ -247,7 +245,9 @@ function getUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon)
     $success = false;
   }
   	
-  return array("message" => $message, "stats" => $stats);
+	var_dump($stats);
+  	
+  return array("success" => $success, "message" => $message, "stats" => $stats);
 }
 
 function sendChat($user_id, $message)
