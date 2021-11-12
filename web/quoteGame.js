@@ -200,6 +200,24 @@ function update()
             roundTime = time + 10;
             gamestate = "preround"
             
+            //send stat update to server
+            
+            
+            
+            $.ajax({type: "POST", url:"apiClient.php", async:true,
+            success:function(data)
+            {
+                nextQuote = data;
+                
+                
+            },
+            failure:function(data)
+            {
+                nextQuote = "Failure";
+
+            }
+        });
+            
             //reset all variables
 
             currentInput = "";
@@ -216,6 +234,8 @@ function update()
             currentToken = 0;
             strList = [];
             response = [];
+            
+            
         }
 
     }
@@ -474,6 +494,10 @@ var currentToken = 0;
 var strList = [];
 var response = [];
 
+var wordsPlayed = 0;
+var gamesPlayed = 0;
+var gamesWon = 0;
+
 
 //alert(gamemode + " " + lobbyid + " " + host);
 
@@ -495,6 +519,7 @@ document.addEventListener('keypress', (event) => {
             response[response.length] = currentInput;
             currentInput = "";
             showtoken++;
+            wordsPlayed++;
         }
         else
         {
