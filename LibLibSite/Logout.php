@@ -6,6 +6,7 @@
     session_start();
 
     $username = $_SESSION[''];
+    $userID = $_SESSION[''];
     $sessionToken = $_SESSION[''];
     $sessionTime = $_SESSION[''];
 
@@ -36,7 +37,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="index.html">Home</a>
+                            <a class="nav-link text-dark" href="Index.php">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Play.php">Play</a>
@@ -62,6 +63,32 @@
             </div>
         </nav>
 </header>
-<h1>Logged Out</h1>
+<div style="margin-left: 2em">
+    <br />
+    <h1>Logged Out</h1>
+    <br />
+    <br />
+    <h3>Please Log Back In</h3>
+    <div>
+        <form action="Login.php" method="post">
+            <div style="max-width:40px">
+                <span>
+                    <label>Username: </label>
+                    <input type="text" name="username" />
+                </span>
+                <br />
+                <span>
+                    <label>Password: </label>
+                    <input type="password" name="password" />
+                </span>
+                <br/>
+                <br/>
+                <button class="btn btn-primary btn-lg" name='type' value='login' type="submit">Login</button>
+                <br />
+            </div>
+        </form>
+    </div>
+    <br />
+</div>
 </body>
 </html>

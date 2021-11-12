@@ -3,26 +3,85 @@
     require_once('get_host_info.inc');
     require_once('rabbitMQLib.inc');
 
-    DebugLog("test");
+    session_start();
+
+    $username = $_SESSION['username'];
+    $userID = $_SESSION['userID'];
+    $sessionToken = $_SESSION['sessionToken'];
+    $sessionTime = $_SESSION['sessionTime'];
+
+    DebugLog("loaded login with username: " . $username);
+    DebugLog("stored session token: " . $sessionToken);
     
+    ValidateSession($sessionTime);
+
+    $messages = array();
+
     if (isset($_POST['type'])) 
     {
         $client = new rabbitMQClient("dbConn.ini","dbServer");
-        DebugLog("test2");
 
         $request = array();
-        $request['type'] = 'login';
-        $request['username'] = $_POST['username'];
-        $request['password'] = $_POST['password'];
-        
-        $response = $client->send_request($request);
 
-        DebugLog("LOGIN REQUEST SUCCESS: " . $response['login']);
+        if (strcmp ($_POST['type'], 'sendChat') == 0)
+        {
+            $request['type'] = 'sendChat';
+            $request['user_id'] = $_SESSION['userID'];
+            $request['message'] = $_POST['message'];
+
+            $response = $client->send_request($request);
+
+            DebugLog("CHAT SEND SUCCESS: " . $response['success']);
+        }
+        else if (strcmp ($_POST['type'], 'getChat') == 0)
+        {
+            $request['type'] = 'getChat';
+            $response = $client->send_request($request);
+            $chat = $response['chat'];
+
+            // DebugLog("CHAT TEST: " . $response['success']);
+            DebugLog("CHAT GET SUCCESS: " . $response['success']);
+            DebugLog("CHAT MESSAGE COUNT: " . count($chat));
+            DebugLog($chat[0]['user_id']);
+            DebugLog($chat[0]['message']);
+            // for ($i = 0 ; $i < count($messages); $i++)
+            //     DebugLog("MSG: " . $messages[$i]['message']);
+        }
     }
 
     function DebugLog($msg) 
     {
         echo "<script>console.log('" . $msg . "');</script>";
+    }
+
+    function ValidateSession($sessionTime)
+    {
+        DebugLog("SESSION TIME: " . $sessionTime);
+
+        // logout if no session time exists 
+        if (strcmp($sessionTime, "") == 0)
+        {
+            DebugLog("empty session time.. logging out..");
+            RedirectToLogout();
+        }
+
+        // logout if session time expired
+        if (time() > $sessionTime)
+        {
+            DebugLog("session expired.. logging out..");
+            RedirectToLogout();
+        }
+        else
+        {
+            $remTime = time() - $sessionTime;
+            DebugLog("session valid.. remaining time: " . $remTime);
+        }
+    }
+
+    function RedirectToLogout()
+    {
+        header('Location: Logout.php');
+        exit();
     }
 ?>
 
@@ -44,7 +103,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="index.html">Home</a>
+                            <a class="nav-link text-dark" href="Index.php">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Play.php">Play</a>
@@ -55,45 +114,73 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Chat.php">Chat</a>
                         </li>
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" href="Stats.php">Stats</a>
+                            </li>
                     </ul>
                 </div>
-                <div class="d-flex">
-                <ul class="navbar-nav flex-grow-1 me-sm-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="Register.php">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="Login.php">Login</a>
-                    </li>    
-                </ul>   
-                </div>
+                <div id="conditionalLogin" class="d-flex">
+                        <ul class="navbar-nav flex-grow-1 me-sm-2">
+                            <?php if (strcmp($username, "") == 0) { ?>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="Register.php">Register</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="Login.php">Login</a>
+                                </li>    
+                            <?php } else { ?> 
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark">
+                                        <?=$username ?> 
+                                    </a>
+                                </li> 
+                            <?php } ?> 
+                        </ul>
+                    </div>
             </div>
         </nav>
 </header>
 <div style="margin-left: 2em">
     <br />
     <h1>Chat</h1>
-    <br />
+        
     <div>
-        <form action="Login.php" method="post">
-            <div style="max-width:40px">
+        <form action="Chat.php" method="post">
+            <div style="max-width:400px">
                 <br />
-                <span>
-                    <label>Username: </label>
-                    <input type="text" name="username" />
-                </span>
-                <br />
-                <span>
-                    <label>Password: </label>
-                    <input type="password" name="password" />
-                </span>
+                <div class="friendsPanel">
+                    <div class="col1">
+                        <div class="friendsList">
+                            <?php for ($i = 0; $i < count($chat); $i++):?>
+                                <p>(<?=$chat[$i]['user_id']?>)  <?=$chat[$i]['message']?> </p>
+                                <br/>
+                            <?php endfor;?>    
+                        </div>
+                    </div>
+                </div>
                 <br/>
-                <br/>
-                <button class="btn btn-primary btn-lg" name='type' value='login' type="submit">Login</button>
+                <button class="btn btn-primary btn-lg" name='type' value='getChat' type="submit">Update Chat</button>
                 <br />
             </div>
         </form>
     </div>
+
+    <br />
+    <div>
+        <form action="Chat.php" method="post">
+            <div style="max-width:150px">
+                <br />
+                <span>
+                    <label>Send a message: </label>
+                    <input type="text" name="message" />
+                </span>
+                <br/>
+                <button class="btn btn-primary btn-lg" name='type' value='sendChat' type="submit">Send Message</button>
+                <br />
+            </div>
+        </form>
+    </div>
+
     <br />
 </div>
 </body>

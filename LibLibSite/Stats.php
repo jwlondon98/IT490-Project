@@ -129,19 +129,7 @@
         <div class="jumbotron">
             <div class="text-center">
                 <h1 class="display-2">Choose a game mode!</h1>
-                <div>
-                    <br/>
-                    <br/>
-                    <a class="btn btn-primary btn-lg" href="game.html">Classic</a>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <a class="btn btn-primary btn-lg" href="gameChaos.html">Chaos</a>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <a class="btn btn-primary btn-lg" href="gameBlind.html">Blind</a>
-                </div>
+                <a class="btn btn-primary btn-lg" href="game.html">Classic</a>
             </div>
         </div>
     </body>

@@ -6,6 +6,7 @@
     session_start();
 
     $username = $_SESSION['username'];
+    $userID = $_SESSION['userID'];
     $sessionToken = $_SESSION['sessionToken'];
     $sessionTime = $_SESSION['sessionTime'];
 
@@ -17,7 +18,6 @@
     if (isset($_POST['type'])) 
     {
         $client = new rabbitMQClient("dbConn.ini","dbServer");
-        DebugLog("test2");
 
         $request = array();
         $request['type'] = 'login';
@@ -29,10 +29,15 @@
         if ($response['login'] == true)
         {
             $_SESSION['username'] = $request['username'];
+
             $_SESSION['sessionToken'] = $response['sessionToken'];
             $_SESSION['sessionTime'] = $response['sessionTime'];
+            $_SESSION['userID'] = $response['userID'];
          
             DebugLog("LOGIN REQUEST SUCCESS: " . $response['login']);
+            DebugLog("WELCOME " . $_SESSION['username'] . "(" . $_SESSION['userID']. ")");
+            
+            RedirectToPlay();
         }
     }
 
@@ -70,6 +75,12 @@
         header('Location: Logout.php');
         exit();
     }
+
+    function RedirectToPlay()
+    {
+        header('Location: Play.php');
+        exit();
+    }
 ?>
 
 <html>
@@ -90,7 +101,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="index.html">Home</a>
+                            <a class="nav-link text-dark" href="Index.php">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Play.php">Play</a>
@@ -101,18 +112,29 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Chat.php">Chat</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="Stats.php">Stats</a>
+                        </li>
                     </ul>
                 </div>
-                <div class="d-flex">
-                <ul class="navbar-nav flex-grow-1 me-sm-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="Register.php">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="Login.php">Login</a>
-                    </li>    
-                </ul>   
-                </div>
+                <div id="conditionalLogin" class="d-flex">
+                        <ul class="navbar-nav flex-grow-1 me-sm-2">
+                            <?php if (strcmp($username, "") == 0) { ?>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="Register.php">Register</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="Login.php">Login</a>
+                                </li>    
+                            <?php } else { ?> 
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark">
+                                        <?=$username ?> 
+                                    </a>
+                                </li> 
+                            <?php } ?> 
+                        </ul>
+                    </div>
             </div>
         </nav>
 </header>

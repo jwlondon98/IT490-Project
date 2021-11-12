@@ -3,12 +3,8 @@
     require_once('get_host_info.inc');
     require_once('rabbitMQLib.inc');
 
-    DebugLog("normal");
-
     if (isset($_POST['type'])) 
     {   
-        DebugLog("post if");
-
         $client = new rabbitMQClient("dbConn.ini","dbServer");
 
         $request = array();
@@ -47,7 +43,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="index.html">Home</a>
+                            <a class="nav-link text-dark" href="Index.php">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Play.php">Play</a>
@@ -58,6 +54,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Chat.php">Chat</a>
                         </li>
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" href="Stats.php">Stats</a>
+                            </li>
                     </ul>
                 </div>
                 <div class="d-flex">

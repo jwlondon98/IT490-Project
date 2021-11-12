@@ -3,26 +3,87 @@
     require_once('get_host_info.inc');
     require_once('rabbitMQLib.inc');
 
-    DebugLog("test");
+    session_start();
+
+    $username = $_SESSION['username'];
+    $userID = $_SESSION['userID'];
+    $sessionToken = $_SESSION['sessionToken'];
+    $sessionTime = $_SESSION['sessionTime'];
+
+    DebugLog("loaded login with username: " . $username);
+    DebugLog("stored session token: " . $sessionToken);
     
+    ValidateSession($sessionTime);
+
+    $friends = GetFriends();
+
     if (isset($_POST['type'])) 
     {
         $client = new rabbitMQClient("dbConn.ini","dbServer");
-        DebugLog("test2");
 
         $request = array();
-        $request['type'] = 'login';
-        $request['username'] = $_POST['username'];
-        $request['password'] = $_POST['password'];
+        $request['type'] = 'setFriends';
+        $request['user_id'] = $_SESSION['userID'];
+        $request['friend_id'] = $_POST['friend_id'];
         
         $response = $client->send_request($request);
 
-        DebugLog("LOGIN REQUEST SUCCESS: " . $response['login']);
+        // DebugLog("LOGIN REQUEST SUCCESS: " . $response['login']);
     }
 
     function DebugLog($msg) 
     {
         echo "<script>console.log('" . $msg . "');</script>";
+    }
+
+    function ValidateSession($sessionTime)
+    {
+        DebugLog("SESSION TIME: " . $sessionTime);
+
+        // logout if no session time exists 
+        if (strcmp($sessionTime, "") == 0)
+        {
+            DebugLog("empty session time.. logging out..");
+            RedirectToLogout();
+        }
+
+        // logout if session time expired
+        if (time() > $sessionTime)
+        {
+            DebugLog("session expired.. logging out..");
+            RedirectToLogout();
+        }
+        else
+        {
+            $remTime = time() - $sessionTime;
+            DebugLog("session valid.. remaining time: " . $remTime);
+        }
+    }
+
+    function RedirectToLogout()
+    {
+        header('Location: Logout.php');
+        exit();
+    }
+
+    function GetFriends()
+    {
+        $client = new rabbitMQClient("dbConn.ini","dbServer");
+
+        $request = array();
+        $request['type'] = 'getFriends';
+        $request['user_id'] = $_SESSION['userID'];
+        
+        $response = $client->send_request($request);
+        $friends = $response['friends'];
+
+        DebugLog("FRIENDS SUCCESS: " . $response['success']);
+        DebugLog("FRIENDS COUNT: " . count($friends));
+        DebugLog("FRIEND: " . $friends);
+        for ($i = 0 ; $i < count($friends); $i++)
+            DebugLog("FRIEND: " . $friends[$i]['friend_id']);
+
+        return $friends; 
     }
 ?>
 
@@ -44,7 +105,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="index.html">Home</a>
+                            <a class="nav-link text-dark" href="Index.php">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Play.php">Play</a>
@@ -55,18 +116,29 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Chat.php">Chat</a>
                         </li>
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" href="Stats.php">Stats</a>
+                            </li>
                     </ul>
                 </div>
-                <div class="d-flex">
-                <ul class="navbar-nav flex-grow-1 me-sm-2">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="Register.php">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="Login.php">Login</a>
-                    </li>    
-                </ul>   
-                </div>
+                <div id="conditionalLogin" class="d-flex">
+                        <ul class="navbar-nav flex-grow-1 me-sm-2">
+                            <?php if (strcmp($username, "") == 0) { ?>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="Register.php">Register</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="Login.php">Login</a>
+                                </li>    
+                            <?php } else { ?> 
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark">
+                                        <?=$username ?> 
+                                    </a>
+                                </li> 
+                            <?php } ?> 
+                        </ul>
+                    </div>
             </div>
         </nav>
     </header>
@@ -74,45 +146,31 @@
         <br />
         <br />
         <h1>Friends</h1>
-    
-        <div>
-            <p>Enter the username of a desired friend:</p>
-            <form method="post">
-                <span>
-                    <input type="text" name="friendUsername" />
-                    <button asp-page-handler="AddFriend">Add Friend</button>
-                </span>
-            </form>
-        </div>
         <br />
+    
+        
         <div class="friendsPanel">
             <div class="col1">
-                <h2>Friends List</h2>
                 <div class="friendsList">
-                </div>
-            </div>
-            <div class="col2">
-                <h2> Friend Requests</h2>
-                <div class="friendsList">
-                        <form action="Friends.php" method="post">
-                            <span>
-                                <input type="hidden" name="friendUsername" value="" />
-                                <button class="btn btn-primary btn-lg" name='type' value='register' type="submit">Register</button>
-                                
-                                <button asp-page-handler="AcceptFriend">Accept Friend</button>
-                            </span>
-                        </form>
-                        
-                    <p>testUsername</p>
-                    <input type="text" name="fName" value="testUsername" disabled/>
-                    <button asp-page-handler="AcceptFriend">Accept Friend</button>
-                    <br />
-                    <br />
+                    <?php for ($i = 0; $i < count($friends); $i++):?>
+                        <p>Friend ID: <?=$friends[$i]['friend_id'] ?>
+                    <?php endfor;?>    
                 </div>
             </div>
         </div>
-        <br />
-</div>
+        <br/>
+        <br/>
+
+        <div class="friendsPanel">
+            <p>Enter the username of a desired friend:</p>
+            <form action="Friends.php" method="post">
+                <span>
+                    <label>Friend Username: </label>
+                    <input type="text" name="friend_id" />
+                    <button class="btn btn-primary btn-lg" style="margin-left:1em" name='type' value='setFriends' type="submit">Add Friend</button>
+                </span>
+        </form>
+        </div>
     </body>
 </html>
 

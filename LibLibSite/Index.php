@@ -1,4 +1,4 @@
-<?php
+﻿<?php
     require_once('path.inc');
     require_once('get_host_info.inc');
     require_once('rabbitMQLib.inc');
@@ -18,16 +18,16 @@
 
     if (isset($_POST['type'])) 
     {
-        $client = new rabbitMQClient("dbConn.ini","dbServer");
+        // $client = new rabbitMQClient("dbConn.ini","dbServer");
 
-        $request = array();
-        $request['type'] = 'login';
-        $request['username'] = $_POST['username'];
-        $request['password'] = $_POST['password'];
+        // $request = array();
+        // $request['type'] = 'login';
+        // $request['username'] = $_POST['username'];
+        // $request['password'] = $_POST['password'];
         
-        $response = $client->send_request($request);
+        // $response = $client->send_request($request);
 
-        DebugLog("LOGIN REQUEST SUCCESS: " . $response['login']);
+        // DebugLog("LOGIN REQUEST SUCCESS: " . $response['login']);
     }
 
     function DebugLog($msg) 
@@ -73,7 +73,7 @@
         <link rel="stylesheet" href="content/css/site.css" />
     </head>
     <body>
-    <header>
+        <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
                 <div class="container">
                     <a class="navbar-brand" asp-area="" asp-page="/Index">Lib Lib</a>
@@ -122,26 +122,18 @@
             </nav>
     </header>
 
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <div class="jumbotron">
-            <div class="text-center">
-                <h1 class="display-2">Choose a game mode!</h1>
-                <div>
-                    <br/>
-                    <br/>
-                    <a class="btn btn-primary btn-lg" href="game.html">Classic</a>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <a class="btn btn-primary btn-lg" href="gameChaos.html">Chaos</a>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <a class="btn btn-primary btn-lg" href="gameBlind.html">Blind</a>
-                </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <div class="text-center">
+            <div class="jumbotron">
+                <h1 class="display-4">Lib Lib</h1>
+                <p>A fun, casual game in which players lib random quotes for points.</p>
+
+                <p class="lead">
+                    <a class="btn btn-primary btn-lg" href="Play" role="button">Start Playing</a>
+                </p>
             </div>
         </div>
     </body>
