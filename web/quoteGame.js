@@ -202,23 +202,20 @@ function update()
             
             //send stat update to server
             
+            gamesPlayed++;
+            gamesWon++;
             
             
-            $.ajax({type: "POST", url:"apiClient.php", async:true,
-            success:function(data)
-            {
-                nextQuote = data;
-                
-                
-            },
-            failure:function(data)
-            {
-                nextQuote = "Failure";
-
-            }
+            
+            $.ajax({type: "POST", url:"sendStats.php", async:true,
+                data: {"gamesPlayed": gamesPlayed, "gamesWon": gamesWon, "wordsPlayed": wordsPlayed}
         });
             
             //reset all variables
+            
+            gamesPlayed = 0;
+            gamesWon = 0;
+            wordsPlayed = 0;
 
             currentInput = "";
 
