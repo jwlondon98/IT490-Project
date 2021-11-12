@@ -48,6 +48,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="Chat.php">Chat</a>
                         </li>
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" href="Stats.php">Stats</a>
+                            </li>
                     </ul>
                 </div>
                 <div class="d-flex">

@@ -16,19 +16,26 @@
     
     ValidateSession($sessionTime);
 
-    if (isset($_POST['type'])) 
+
+    $client = new rabbitMQClient("dbConn.ini","dbServer");
+
+    $request = array();
+    $request['type'] = 'getUserStats';
+    $request['user_id'] = $_SESSION['userID'];
+    $gamesPlayed = "";
+    $wordsPlayed = "";
+    $gamesWon = "";
+
+    $response = $client->send_request($request);
+    if ($response['success'] == true)
     {
-        $client = new rabbitMQClient("dbConn.ini","dbServer");
-
-        $request = array();
-        $request['type'] = 'login';
-        $request['username'] = $_POST['username'];
-        $request['password'] = $_POST['password'];
-        
-        $response = $client->send_request($request);
-
-        DebugLog("LOGIN REQUEST SUCCESS: " . $response['login']);
+        $stats = $response['stats'];
+        $gamesPlayed = $stats['gamesPlayed'];
+        $wordsPlayed = $stats['wordsPlayed'];
+        $gamesWon = $stats['gamesWon'];
     }
+
+    DebugLog("STATS GET SUCCESS: " . $response['success']);
 
     function DebugLog($msg) 
     {
@@ -128,9 +135,15 @@
         <br/>
         <div class="jumbotron">
             <div class="text-center">
-                <h1 class="display-2">Choose a game mode!</h1>
-                <a class="btn btn-primary btn-lg" href="game.html">Classic</a>
+                <h1 class="display-2">Player Stats</h1>
+                <h2 class="display-5">Games Played: <?=$gamesPlayed?></h2>
+                <h2 class="display-5">Words Played: <?=$wordsPlayed?></h2>
+                <h2 class="display-5">Games Won: <?=$gamesWon?></h2>
             </div>
+
+        <br/>
+        <br/>
+
         </div>
     </body>
 </html>
