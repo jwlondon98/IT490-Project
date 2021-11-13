@@ -10,6 +10,7 @@
     var checkReady = function(callback) {
         if (window.jQuery) {
             callback(jQuery);
+            //alert("Ajax loaded");
         }
         else {
             window.setTimeout(function() { checkReady(callback); }, 20);
@@ -127,17 +128,20 @@ function update()
     {
         
         nextQuote = "getting"
+        //alert("Start");
         
             $.ajax({type: "GET", url:"apiClient.php", async:true,
             success:function(data)
             {
                 nextQuote = data;
+                //alert("Good");
                 
                 
             },
             failure:function(data)
             {
                 nextQuote = "Failure";
+                //alert("Bad");
 
             }
         });
@@ -200,7 +204,33 @@ function update()
             roundTime = time + 10;
             gamestate = "preround"
             
+            //send stat update to server
+            
+            gamesPlayed++;
+            gamesWon++;
+            
+            
+            
+            $.ajax({type: "POST", url:"sendStats.php", async:true, dataType: 'json',
+                data: {"played": gamesPlayed, "won": gamesWon, "words": wordsPlayed, "id": user_id},
+            success:function(data)
+            {
+                //alert("Good");
+                
+                
+            },
+            failure:function(data)
+            {
+                //alert("Bad");
+
+            }
+        });
+            
             //reset all variables
+            
+            gamesPlayed = 0;
+            gamesWon = 0;
+            wordsPlayed = 0;
 
             currentInput = "";
 
@@ -216,6 +246,8 @@ function update()
             currentToken = 0;
             strList = [];
             response = [];
+            
+            
         }
 
     }
@@ -454,10 +486,13 @@ var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
 
 var time = Math.floor(Date.now() / 1000);
-var roundTime = time + 5;
+var roundTime = time + 10;
 
 
 var gamemode = document.getElementById("gameScript").getAttribute("data-gamemode");
+var user_id = document.getElementById("gameScript").getAttribute("data-userid");
+
+//user_id = 51;
 
 var currentInput = "";
 
@@ -473,6 +508,10 @@ var tokens = [];
 var currentToken = 0;
 var strList = [];
 var response = [];
+
+var wordsPlayed = 0;
+var gamesPlayed = 0;
+var gamesWon = 0;
 
 
 //alert(gamemode + " " + lobbyid + " " + host);
@@ -495,6 +534,7 @@ document.addEventListener('keypress', (event) => {
             response[response.length] = currentInput;
             currentInput = "";
             showtoken++;
+            wordsPlayed++;
         }
         else
         {

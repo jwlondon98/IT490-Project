@@ -5,16 +5,6 @@
 
     session_start();
 
-    $username = $_SESSION['username'];
-    $userID = $_SESSION['userID'];
-    $sessionToken = $_SESSION['sessionToken'];
-    $sessionTime = $_SESSION['sessionTime'];
-
-    DebugLog("loaded login with username: " . $username);
-    DebugLog("stored session token: " . $sessionToken);
-    
-    // ValidateSession($sessionTime);
-    
     if (isset($_POST['type'])) 
     {
         $client = new rabbitMQClient("dbConn.ini","dbServer");
@@ -119,20 +109,9 @@
                 </div>
                 <div id="conditionalLogin" class="d-flex">
                         <ul class="navbar-nav flex-grow-1 me-sm-2">
-                            <?php if (strcmp($username, "") == 0) { ?>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" href="Register.php">Register</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" href="Login.php">Login</a>
-                                </li>    
-                            <?php } else { ?> 
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark">
-                                        <?=$username ?> 
-                                    </a>
-                                </li> 
-                            <?php } ?> 
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="Register.php">Register</a>
+                            </li>
                         </ul>
                     </div>
             </div>

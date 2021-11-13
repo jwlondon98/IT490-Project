@@ -5,13 +5,10 @@
 
     session_start();
 
-    $username = $_SESSION[''];
-    $userID = $_SESSION[''];
-    $sessionToken = $_SESSION[''];
-    $sessionTime = $_SESSION[''];
-
-    // DebugLog("loaded login with username: " . $username);
-    // DebugLog("stored session token: " . $sessionToken);
+    unset($_SESSION['username']);
+    unset($_SESSION['userID']);
+    unset($_SESSION['sessionToken']);
+    unset($_SESSION['sessionTime']);
 
     function DebugLog($msg) 
     {

@@ -8,24 +8,43 @@ $client = new rabbitMQClient("dbConn.ini","dbServer");
 $request = array();
 $request['type'] = "setUserStats";
 
-if(isset($_SESSION['user_id']))
+
+if(isset($_POST['id']))
 {
-    $request['user_id'] = $_SESSION['user_id'];
+    $request['user_id'] = $_POST['id'];
 }
-if(isset($_POST['gamesPlayed']))
+else
 {
-    $request['gamesPlayed'] = $_POST['gamesPlayed'];
+    $request['user_id'] = 0;
 }
-if(isset($_POST['gamesWon']))
+if(isset($_POST['played']))
 {
-    $request['gamesWon'] = $_POST['gamesWon'];
+    $request['gamesPlayed'] = $_POST['played'];
 }
-if(isset($_POST['wordsPlayed']))
+else
 {
-    $request['wordsPlayed'] = $_POST['wordsPlayed'];
+    $request['gamesPlayed'] = 100;
+}
+if(isset($_POST['won']))
+{
+    $request['gamesWon'] = $_POST['won'];
+}
+else
+{
+    $request['gamesWon'] = 100;
+}
+if(isset($_POST['words']))
+{
+    $request['wordsPlayed'] = $_POST['words'];
+}
+else
+{
+    $request['wordsPlayed'] = 100;
 }
 
 $response = $client->send_request($request);
+
+var_dump($response);
 //$response = $client->publish($request);
 
 ?>

@@ -132,15 +132,15 @@
                 <div>
                     <br/>
                     <br/>
-                    <a class="btn btn-primary btn-lg" href="game.html">Classic</a>
+                    <a class="btn btn-primary btn-lg" href="game.php">Classic</a>
                     <br/>
                     <br/>
                     <br/>
-                    <a class="btn btn-primary btn-lg" href="gameChaos.html">Chaos</a>
+                    <a class="btn btn-primary btn-lg" href="gameChaos.php">Chaos</a>
                     <br/>
                     <br/>
                     <br/>
-                    <a class="btn btn-primary btn-lg" href="gameBlind.html">Blind</a>
+                    <a class="btn btn-primary btn-lg" href="gameBlind.php">Blind</a>
                 </div>
             </div>
         </div>

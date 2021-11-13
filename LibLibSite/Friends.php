@@ -76,13 +76,7 @@
         
         $response = $client->send_request($request);
         $friends = $response['friends'];
-
-        DebugLog("FRIENDS SUCCESS: " . $response['success']);
-        DebugLog("FRIENDS COUNT: " . count($friends));
-        DebugLog("FRIEND: " . $friends);
-        for ($i = 0 ; $i < count($friends); $i++)
-            DebugLog("FRIEND: " . $friends[$i]['friend_id']);
-
+       
         return $friends; 
     }
 ?>
@@ -162,10 +156,10 @@
         <br/>
 
         <div class="friendsPanel">
-            <p>Enter the username of a desired friend:</p>
+            <p>Enter the ID of a desired friend:</p>
             <form action="Friends.php" method="post">
                 <span>
-                    <label>Friend Username: </label>
+                    <label>Friend ID: </label>
                     <input type="text" name="friend_id" />
                     <button class="btn btn-primary btn-lg" style="margin-left:1em" name='type' value='setFriends' type="submit">Add Friend</button>
                 </span>
