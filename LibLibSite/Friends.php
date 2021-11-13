@@ -15,20 +15,30 @@
     
     ValidateSession($sessionTime);
 
-    $friends = GetFriends();
+    $friends = array();
 
     if (isset($_POST['type'])) 
     {
         $client = new rabbitMQClient("dbConn.ini","dbServer");
 
         $request = array();
-        $request['type'] = 'setFriends';
-        $request['user_id'] = $_SESSION['userID'];
-        $request['friend_id'] = $_POST['friend_id'];
-        
-        $response = $client->send_request($request);
+        $requestType = $_POST['type'];
+        DebugLog("PAGE LOADED WITH REQUEST TYPE: " . $requestType);
+        $request['type'] = $requestType;
 
-        // DebugLog("LOGIN REQUEST SUCCESS: " . $response['login']);
+        if (strcmp($requestType, "setFriends") == 0)
+        {
+            $request['user_id'] = $_SESSION['userID'];
+            $request['friend_id'] = $_POST['friend_id'];
+            
+            $response = $client->send_request($request);
+        }
+        else if (strcmp($requestType, "getFriends") == 0)
+        {
+            $request['user_id'] = $_SESSION['userID'];
+            $response = $client->send_request($request);
+            $friends = $response['friends'];
+        }
     }
 
     function DebugLog($msg) 
@@ -64,20 +74,6 @@
     {
         header('Location: Logout.php');
         exit();
-    }
-
-    function GetFriends()
-    {
-        $client = new rabbitMQClient("dbConn.ini","dbServer");
-
-        $request = array();
-        $request['type'] = 'getFriends';
-        $request['user_id'] = $_SESSION['userID'];
-        
-        $response = $client->send_request($request);
-        $friends = $response['friends'];
-       
-        return $friends; 
     }
 ?>
 
@@ -127,7 +123,7 @@
                             <?php } else { ?> 
                                 <li class="nav-item">
                                     <a class="nav-link text-dark">
-                                        <?=$username ?> 
+                                        <?=$username ?> (<?=$userID ?>)
                                     </a>
                                 </li> 
                             <?php } ?> 
@@ -150,6 +146,9 @@
                         <p>Friend ID: <?=$friends[$i]['friend_id'] ?>
                     <?php endfor;?>    
                 </div>
+                <form action="Friends.php" method="post">
+                    <button class="btn btn-primary btn-lg" name='type' value='getFriends' type="submit">Update Friends List</button>
+                </form>
             </div>
         </div>
         <br/>

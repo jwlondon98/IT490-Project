@@ -112,7 +112,7 @@
                             <?php } else { ?> 
                                 <li class="nav-item">
                                     <a class="nav-link text-dark">
-                                        <?=$username ?> 
+                                        <?=$username ?> (<?=$userID ?>)
                                     </a>
                                 </li> 
                             <?php } ?> 

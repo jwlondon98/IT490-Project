@@ -130,8 +130,8 @@
                                 </li>    
                             <?php } else { ?> 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark">
-                                        <?=$username ?> 
+                                <a class="nav-link text-dark">
+                                        <?=$username ?> (<?=$userID ?>)
                                     </a>
                                 </li> 
                             <?php } ?> 

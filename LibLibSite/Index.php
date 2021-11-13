@@ -115,8 +115,8 @@
                                 </li>    
                             <?php } else { ?> 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark">
-                                        <?=$username ?> 
+                                <a class="nav-link text-dark">
+                                        <?=$username ?> (<?=$userID ?>)
                                     </a>
                                 </li> 
                             <?php } ?> 
@@ -136,7 +136,7 @@
                 <p>A fun, casual game in which players lib random quotes for points.</p>
 
                 <p class="lead">
-                    <a class="btn btn-primary btn-lg" href="Play" role="button">Start Playing</a>
+                    <a class="btn btn-primary btn-lg" href="Play.php" role="button">Start Playing</a>
                 </p>
             </div>
         </div>
