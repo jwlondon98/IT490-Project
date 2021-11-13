@@ -4,6 +4,10 @@
     require_once('rabbitMQLib.inc');
 
     session_start();
+    
+    // if logged out do nothing
+    if (!isset($_SESSION['username']))
+        return;
 
     $username = $_SESSION['username'];
     $userID = $_SESSION['userID'];
@@ -13,7 +17,7 @@
     DebugLog("loaded login with username: " . $username);
     DebugLog("user id: " . $userID);
     DebugLog("stored session token: " . $sessionToken);
-    
+
     ValidateSession($sessionTime);
 
     if (isset($_POST['type'])) 
