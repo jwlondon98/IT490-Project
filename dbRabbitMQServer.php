@@ -26,6 +26,7 @@ function doRegister($email,$username,$password)
     //builds the SQL statement, the syntax should be exactly the same as what you are used to
     //Note how the values in the $params array are in the SQL statement
     $stmt = $dbLogin->prepare("INSERT INTO users(user_email, user_name, user_password_hash) VALUES(:email, :username, :password)");
+
     
     //executes the prepared statement, make sure to input the $params array, or else the call won't work
     $r = $stmt->execute($params);
@@ -192,18 +193,40 @@ function leaveLobby($username, $lobbyID)
 
 function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon)
 {
-  $dbGame = $GLOBALS['dbGAME'];
+  $dbGame = $GLOBALS['dbGame'];
 
   $params = array();
   $params[':user_id'] = $user_id;
   $params[':gamesPlayed'] = $gamesPlayed;
   $params[':wordsPlayed'] = $wordsPlayed;
   $params[':gamesWon'] = $gamesWon;
+  $selParams = array();
+  $selParams[':user_id'] = $user_id;
   
-  $stmt = $dbGame->prepare("INSERT INTO userStats(user_id, gamesPlayed, wordsPlayed, gamesWon) VALUES(:user_id, :gamesPlayed, :wordsPlayed, :gamesWon)");
-
-  $r = $stmt->execute($params);
-  $e = $stmt->errorInfo();
+  echo "\nSET STATS: " . $user_id .  "\n";
+  echo "\nSET gamesPlayed: " . $gamesPlayed .  "\n";
+  echo "\nSET wordsPlayed: " . $wordsPlayed .  "\n";
+  echo "\nSET gamesWon: " . $gamesWon .  "\n";
+  
+  $selectStatement = $dbGame->prepare("SELECT * FROM userStats where user_id = :user_id");
+  $result = $selectStatement->execute($selParams);
+  $e = $selectStatement->errorInfo();
+  
+  if ($selectStatement->rowCount() == 0)
+  {
+   	$insertStatement = $dbGame->prepare("INSERT INTO userStats(user_id, gamesPlayed, wordsPlayed, gamesWon) VALUES(:user_id, :gamesPlayed, :wordsPlayed, :gamesWon)");
+  	
+  	$result = $insertStatement->execute($params);
+  	$e = $insertStatement->errorInfo();
+  }
+  else
+  {
+  	$updateStatement = $dbGame->prepare("UPDATE userStats SET gamesPlayed = gamesPlayed+:gamesPlayed, gamesWon = gamesWon+:gamesWon, wordsPlayed = wordsPlayed+:wordsPlayed WHERE user_id = :user_id");
+  	
+  	$result = $updateStatement->execute($params);
+  	$e = $updateStatement->errorInfo();
+  }
+  
 
   if($e[0] == "00000")
   {
@@ -215,8 +238,10 @@ function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon)
     $message = "No User Stats Set";
     $success = false;
   }
+  
+  
 
-  return array("setUserStats" => $setUserStats);
+  return array("success" => $success);
 }
 
 
