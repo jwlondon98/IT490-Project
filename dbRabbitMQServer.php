@@ -26,6 +26,7 @@ function doRegister($email,$username,$password)
     //builds the SQL statement, the syntax should be exactly the same as what you are used to
     //Note how the values in the $params array are in the SQL statement
     $stmt = $dbLogin->prepare("INSERT INTO users(user_email, user_name, user_password_hash) VALUES(:email, :username, :password)");
+
     
     //executes the prepared statement, make sure to input the $params array, or else the call won't work
     $r = $stmt->execute($params);
@@ -56,6 +57,7 @@ function doRegister($email,$username,$password)
 function doLogin($username,$password)
 {
     $dbLogin = $GLOBALS['dbLogin'];
+    $logger = $GLOBALS['logger'];
     
     $login = false;
     $sessionToken;
@@ -92,20 +94,25 @@ function doLogin($username,$password)
             $sessionToken = session_create_id();
             
             //gets the current unix timestamp for validation later
-            $sessionTime = time();
+            $sessionTime = time() + 180;
             
             $login = true;
             
+            
             $params = array();
             $params[':session_token'] = $sessionToken;
-            $params[':session_time'] = $sessionTime;
+            //$params[':session_time'] = $sessionTime;
             $params[':user_id'] = $result['user_id'];
             
             //updates the session token and session time so we can use them to validate the user sessions
-            $stmt = $dbLogin->prepare("UPDATE users SET session_token = :session_token, session_time = :session_time WHERE user_id = :user_id");
+            $stmt = $dbLogin->prepare("UPDATE users SET session_token = :session_token WHERE user_id = :user_id");
             
+            echo "\npassword verified\n";
             $r = $stmt->execute($params);
             $e = $stmt->errorInfo();
+            
+            
+            echo ("ERORR: " . $e[0]);
             
             if($e[0] != "00000")
             {
@@ -129,10 +136,13 @@ function doLogin($username,$password)
     //if the login is successful, returns true, plus the session token and session time to be applied to the user
     if($login)
     {
-        return array("login" => $login, "sessionToken" => $sessionToken, "sessionTime" => $sessionTime);
+    	echo "login successful";
+        return array("login" => $login, "sessionToken" => $sessionToken, "sessionTime" => $sessionTime, "userID" => $result['user_id']);
     }
     else //just returns false, showing that the user is not logged in
     {
+    
+    	echo "login failed";
 	    return array("login" => $login);
     }
 }
@@ -181,47 +191,201 @@ function leaveLobby($username, $lobbyID)
     return array("didLeave" => $didLeave);
 }
 
-function setUserStats($username, $gamesPlayed, $wordsFilled, $roundsWon)
+function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon)
 {
-    //adds the provided stats to the user in the stats table
-    //fills success with true or false depending on if it worked
+  $dbGame = $GLOBALS['dbGame'];
+
+  $params = array();
+  $params[':user_id'] = $user_id;
+  $params[':gamesPlayed'] = $gamesPlayed;
+  $params[':wordsPlayed'] = $wordsPlayed;
+  $params[':gamesWon'] = $gamesWon;
+  $selParams = array();
+  $selParams[':user_id'] = $user_id;
+  
+  echo "\nSET STATS: " . $user_id .  "\n";
+  echo "\nSET gamesPlayed: " . $gamesPlayed .  "\n";
+  echo "\nSET wordsPlayed: " . $wordsPlayed .  "\n";
+  echo "\nSET gamesWon: " . $gamesWon .  "\n";
+  
+  $selectStatement = $dbGame->prepare("SELECT * FROM userStats where user_id = :user_id");
+  $result = $selectStatement->execute($selParams);
+  $e = $selectStatement->errorInfo();
+  
+  if ($selectStatement->rowCount() == 0)
+  {
+   	$insertStatement = $dbGame->prepare("INSERT INTO userStats(user_id, gamesPlayed, wordsPlayed, gamesWon) VALUES(:user_id, :gamesPlayed, :wordsPlayed, :gamesWon)");
+  	
+  	$result = $insertStatement->execute($params);
+  	$e = $insertStatement->errorInfo();
+  }
+  else
+  {
+  	$updateStatement = $dbGame->prepare("UPDATE userStats SET gamesPlayed = gamesPlayed+:gamesPlayed, gamesWon = gamesWon+:gamesWon, wordsPlayed = wordsPlayed+:wordsPlayed WHERE user_id = :user_id");
+  	
+  	$result = $updateStatement->execute($params);
+  	$e = $updateStatement->errorInfo();
+  }
+  
+
+  if($e[0] == "00000")
+  {
+    $message = "User Stats Set";
+    $success = true;
+  }
+  else
+  {
+    $message = "No User Stats Set";
+    $success = false;
+  }
+  
+  
+
+  return array("success" => $success);
+}
+
+
+function getUserStats($user_id)
+{
+  $dbGame = $GLOBALS['dbGame'];
+
+  $params = array();
+  $params[':user_id'] = $user_id;
+ 
+  
+  $stmt = $dbGame->prepare("SELECT gamesPlayed, wordsPlayed, gamesWon from userStats WHERE user_id = :user_id");
+
+  $r = $stmt->execute($params);
+  $e = $stmt->errorInfo();
+
+  $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+  if($e[0] == "00000")
+  {
+    $message = "User Stats Retrieved";
+    $success = true;
+  }
+  else
+  {
+    $message = "No User Stats Retrieved";
+    $success = false;
+  }
+  	
+	var_dump($stats);
+  	
+  return array("success" => $success, "message" => $message, "stats" => $stats);
+}
+
+function sendChat($user_id, $message)
+{
+    $dbGame = $GLOBALS['dbGame'];
+    $params = array();
+    $params[':user_id'] = $user_id;
+    $params[':message'] = $message;
+
+    $stmt = $dbGame->prepare("INSERT INTO Chat(user_id, message) VALUES(:user_id, :message)");
+
+    $r = $stmt->execute($params);
+    $e = $stmt->errorInfo();
     
-    $success;
-    
+    if($e[0] == "00000")
+    {
+        $message = "Chat Saved";
+        $success = true;
+    }
+    else
+    {
+        $message = "No Chat saved";
+        $success = false;
+    }
+
     return array("success" => $success);
 }
 
-function getUserStats($username)
+function getChat()
 {
-    //fills user stat values from DB
+    $dbGame = $GLOBALS['dbGame'];
+    $params = array();
+    //$params[':user_id'] = $user_id;
+    //$params[':message'] = $message;
 
+    $stmt = $dbGame->prepare("SELECT user_id, message from Chat");
+
+//$stmt = $dbGame->prepare("SELECT user_id, message from Chat WHERE user_id = :user_id, message = :message");
+    $r = $stmt->execute($params);
+    $e = $stmt->errorInfo();
     
-    $gamesPlayed;
-    $wordsFilled;
-    $roundsWon;
+    $chat = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    return array("gamesPlayed" => $gamesPlayed, "wordsFilled" => $wordsFilled, "roundsWon" => $roundsWon);
+    if($e[0] == "00000")
+    {
+        $message = "Chat Recieved";
+        $success = true;
+    }
+    else
+    {
+        $message = "No Chat Received";
+        $success = false;
+    }
+
+	echo "\nchat dump\n";
+    var_dump($chat);
+
+    return array("success" => $success, "chat" => $chat);
 }
 
-function sendChat($username, $lobbyID, $message)
+function setFriends($user_id, $friend_id)
 {
-    //adds message to the chat database with the username and lobby ID
-    //if possible, maybe delete chat records from lobbies that no longer exist or are too old
-    //fill success variable as true or false if the chat was sent to the db
-    
-    $success;
-    
-    return array("success" => $success);
+    $dbGame = $GLOBALS['dbGame'];
+    $params = array();
+    $params[':user_id'] = $user_id;
+    $params[':friend_id'] = $friend_id;
+    $stmt = $dbGame->prepare("INSERT INTO Friends(user_id, friend_id) VALUES(:user_id, :friend_id)");
+
+    $r = $stmt->execute($params);
+    $e = $stmt->errorInfo();
+    if($e[0] == "00000")
+    {
+        $message = "Friends added";
+        $success = true;
+    }
+    else
+    {
+        $message = "No Friends added";
+        $success = false;
+    }
+
+    return array("setFriends" => $success);
 }
 
-function getChat($lobbyID)
+function getFriends($user_id)
 {
-    //returns most recent chats (idk, maybe 10 most recent)
-    //I'll let you decide what format these should be sent back as, maybe an
-    //array of arrays, with each sub array having the username of the sender and the message
-    
-    
-}
+	$dbGame = $GLOBALS['dbGame'];
+	$params = array();
+	$params[':user_id'] = $user_id;
+	echo "\nGET FRIENDS\n";
+        echo "USER ID: " . $user_id;
+        $stmt = $dbGame->prepare("SELECT friend_id from Friends WHERE user_id = :user_id");
+        //$stmt = $dbGame->prepare("SELECT * from users");
+        
+        $r = $stmt->execute($params);
+        $e = $stmt->errorInfo();
+        
+        $friends =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if($e[0] == "00000")
+        {
+                $message = "Friends retrieved";
+                $success = true;
+        }
+        else
+        {
+                $message = "No Friends retrieved";
+                $success = false;
+        }      
+        
+        var_dump($friends);
+        return array("success" => $success, "friends" => $friends);  
+}       
+
 
 
 function requestProcessor($request)
@@ -253,16 +417,22 @@ function requestProcessor($request)
       return leaveLobby($request['username'], $request['lobbyID']);
       
     case "setUserStats":
-      return setUserStats($request['username'], $request['gamesPlayed'], $request['wordsFilled'], $request['roundsWon']);
+      return setUserStats($request['user_id'], $request['gamesPlayed'], $request['wordsPlayed'], $request['gamesWon']);
       
     case "getUserStats":
-      return getUserStats($request['username']);
+      return getUserStats($request['user_id']);
       
     case "sendChat":
-      return sendChat($request['username'], $request['lobbyID'], $request['message']);
+      return sendChat($request['user_id'], $request['message']);
     
     case "getChat":
-      return getChat($request['lobbyID']);
+      return getChat();
+      
+    case "setFriends":
+      return setFriends($request['user_id'], $request['friend_id']);
+      
+    case "getFriends":
+      return getFriends($request['user_id']);
   }
   
   return array("returnCode" => '0', 'message'=>"request type not found");
@@ -277,7 +447,7 @@ $foundGame = true;
 $foundLobby = true;
 
 $GLOBALS['test'] = "Test";
-
+$GLOBALS['logger'] = $logger;
 
 
 $dbGame = getDB("Game");
