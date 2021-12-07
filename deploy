@@ -1,0 +1,238 @@
+#!/usr/bin/php
+<?php
+    
+    //todo->add the ability to add entire directories
+    function track($startPath)
+    {
+        $path;
+        
+        if(substr($startPath, 0, 1) == '/')
+        {
+            $path = $startPath;
+        }
+        else
+        {
+            $path = realpath($startPath);
+        }
+        
+        if(is_dir($path))
+        {
+            foreach(glob($path.'/*') as $dirFile)
+            {
+                trackFile($dirFile);
+            }
+            exit();
+        }
+        
+        if(!file_exists($path))
+        {
+            echo "File does not exist, please check filename".PHP_EOL;
+            exit();
+        }
+        
+        trackFile($path);
+        
+        exit();
+
+        
+        
+    }
+    
+    function trackFile($path)
+    {
+    
+        $file = @fopen("/usr/local/deployment/tracked.txt", "c+");
+        
+        if(is_dir($path))
+        {
+            foreach(glob($path.'/*') as $dirFile)
+            {
+                trackFile($dirFile);
+            }
+        }
+    
+        if($file)
+        {
+            while(($buffer = fgets($file, 4096)) !== false)
+            {
+                
+                if($buffer == $path.PHP_EOL)
+                {
+                    echo "File already tracked. Call deploy untrack <filename> to remove file from tracking".PHP_EOL;
+                    fclose($file);
+                    
+                    return;
+                    
+                }
+            }
+        }
+        else
+        {
+            echo "Tracking file failed to open. Did you run this with sudo?".PHP_EOL;
+            fclose($file);
+            exit();
+        }
+        
+        fclose($file);
+        
+        file_put_contents("/usr/local/deployment/tracked.txt", $path.PHP_EOL, FILE_APPEND);
+        echo $path." tracked successfully".PHP_EOL;
+    }
+    
+    function untrack($startPath)
+    {
+        $path;
+        $file = file_get_contents("/usr/local/deployment/tracked.txt");
+        
+        if(substr($startPath, 0, 1) == '/')
+        {
+            $path = $startPath;
+        }
+        else
+        {
+            $path = realpath($startPath);
+        }
+        
+        if(is_dir($path))
+        {
+            foreach(glob($path.'/*') as $dirFile)
+            {
+                untrackFile($dirFile);
+            }
+            exit();
+        }
+        
+        
+        untrackFile($path);
+    }
+    
+    function untrackFile($path)
+    {
+    
+        if(is_dir($path))
+        {
+            foreach(glob($path.'/*') as $dirFile)
+            {
+                untrackFile($dirFile);
+            }
+        }
+    
+        $file = file_get_contents("/usr/local/deployment/tracked.txt");
+        if($file)
+        {
+            
+            if(strpos($file, $path) !== false)
+            {
+                $file = str_replace($path.PHP_EOL, '', $file);
+                file_put_contents("/usr/local/deployment/tracked.txt", $file);
+                echo $path." removed from tracking".PHP_EOL;
+                return;
+            }
+            else
+            {
+                echo "File not tracked, use deploy track <filename> to track the file".PHP_EOL;
+                return;
+            }
+        
+
+        }
+        else
+        {
+            echo "Tracking file failed to open. Did you run this with sudo?".PHP_EOL;
+            fclose($file);
+            exit();
+        }
+    }
+    
+    function addService($service)
+    {
+        $file = @fopen("/usr/local/deployment/services.txt", "c+");
+        
+    
+        if($file)
+        {
+            while(($buffer = fgets($file, 4096)) !== false)
+            {
+                
+                if($buffer == $service.PHP_EOL)
+                {
+                    echo "Service already tracked. Call deploy rmService <service> to remove service from tracking".PHP_EOL;
+                    fclose($file);
+                    
+                    return;
+                    
+                }
+            }
+        }
+        else
+        {
+            echo "Tracking file failed to open. Did you run this with sudo?".PHP_EOL;
+            fclose($file);
+            exit();
+        }
+        
+        fclose($file);
+        
+        file_put_contents("/usr/local/deployment/services.txt", $service.PHP_EOL, FILE_APPEND);
+        echo $service." tracked successfully".PHP_EOL;
+    
+    }
+    
+    function rmService($service)
+    {
+        $file = file_get_contents("/usr/local/deployment/services.txt");
+        if($file)
+        {
+            
+            if(strpos($file, $service) !== false)
+            {
+                $file = str_replace($service.PHP_EOL, '', $file);
+                file_put_contents("/usr/local/deployment/services.txt", $file);
+                echo $service." removed from tracking".PHP_EOL;
+                return;
+            }
+            else
+            {
+                echo "Service not tracked. Call deploy addService <service> to add service from tracking".PHP_EOL;
+                return;
+            }
+        
+
+        }
+        else
+        {
+            echo "Tracking file failed to open. Did you run this with sudo?".PHP_EOL;
+            fclose($file);
+            exit();
+        }
+    }
+    
+    
+    //main check to see what command was issued for the client
+
+    if($argc < 2)
+    {
+        echo "No arguements specified. See the github README for details".PHP_EOL;
+        exit();
+    }
+
+    switch($argv[1])
+    {
+        case "track":
+            track($argv[2]);
+            break;
+            
+        case "untrack":
+            untrack($argv[2]);
+            break;
+            
+        case "addService":
+            addService($argv[2]);
+            break;
+            
+        case "rmService":
+            rmService($argv[2]);
+            break;
+    }
+
+?>

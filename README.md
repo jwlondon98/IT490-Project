@@ -1,3 +1,3 @@
-# IT490-Project DBConn
+# IT490-Project deployment-final
 
-This branch is used for the database server, with all the necessary files required to run that server and handle the connections between it and RabbitMQ. I have moved all of the SQL files into gamesql, please put any new ones there in the future.
+This branch will store all of the important files for the deployment server.

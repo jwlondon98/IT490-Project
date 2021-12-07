@@ -8,6 +8,7 @@ require_once('RabbitLogger/490Logger.php');
 
 require_once('getDB.php');
 
+/*
 function doRegister($email,$username,$password)
 {
     $dbLogin = $GLOBALS['dbLogin']; //gets the registation database defined at the bottom of the file
@@ -384,7 +385,8 @@ function getFriends($user_id)
         
         var_dump($friends);
         return array("success" => $success, "friends" => $friends);  
-}       
+}      
+*/
 
 
 
@@ -398,41 +400,14 @@ function requestProcessor($request)
   }
   switch ($request['type'])
   {
-    case "register":
-      return doRegister($request['email'],$request['username'],$request['password']);
-      
-    case "login":
-      return doLogin($request['username'],$request['password']);
-      
-    case "validate_session":
-      return doValidate($request['sessionId']);
-      
-    case "getLobbies":
-      return getLobbies($request['gamemode']);
-      
-    case "joinLobby":
-      return joinLobby($request['username'], $request['lobbyID']);
-      
-    case "leaveLobby":
-      return leaveLobby($request['username'], $request['lobbyID']);
-      
-    case "setUserStats":
-      return setUserStats($request['user_id'], $request['gamesPlayed'], $request['wordsPlayed'], $request['gamesWon']);
-      
-    case "getUserStats":
-      return getUserStats($request['user_id']);
-      
-    case "sendChat":
-      return sendChat($request['user_id'], $request['message']);
-    
-    case "getChat":
-      return getChat();
-      
-    case "setFriends":
-      return setFriends($request['user_id'], $request['friend_id']);
-      
-    case "getFriends":
-      return getFriends($request['user_id']);
+    case "create":
+      return processCreate($request['packageName'],$request['version'],$request['lastUpdate']);
+    case "fail":
+      return processFail($request['packageName'],$request['version']);
+    case "rollback":
+      return processRollback($request['packageName'],$request['version']);
+    case "install":
+      return processInstall($request['packageName'],$request['version']);
   }
   
   return array("returnCode" => '0', 'message'=>"request type not found");
@@ -441,54 +416,36 @@ function requestProcessor($request)
 
 
 $logger = new rabbitLogger("RabbitLogger/logger.ini", "testListener");
-$server = new rabbitMQServer("dbConn.ini","dbServer");
+$server = new rabbitMQServer("deploymentConn.ini","deploymentServer");
 
-$foundGame = true;
-$foundLobby = true;
+$foundDB = true;
 
-$GLOBALS['test'] = "Test";
 $GLOBALS['logger'] = $logger;
 
 
-$dbGame = getDB("Game");
-$dbLogin = getDB("login");
+$db = getDB();
 
 
 
-if (!isset($dbGame)) 
+
+if (!isset($db)) 
 {
     $logger->log_rabbit('Error', 'Game database in dbServer not connected. Is the server up?');
     echo 'Game database in dbServer not connected. Is the server up?'.PHP_EOL;
-    $foundGame = false;
+    $foundDB = false;
     
     //exit();
 }
 else
 {
-    $GLOBALS['dbGame'] = $dbGame;
+    $GLOBALS['db'] = $db;
 }
 
-if(!isset($dbLogin))
-{
-    $logger->log_rabbit('Error', 'Login database not working in dbServer not connected. Is the server up?');
-    echo 'Login database in dbServer not connected. Is the server up?'.PHP_EOL;
-    //exit();
-    
-    $foundLobby = false;
-}
-else
-{
-    $GLOBALS['dbLogin'] = $dbLogin;
-}
 
-if($foundLobby == false || $foundGame == false)
+if($foundDB == false)
 {
     exit();
 }
 
-echo "Started db request server";
-$logger->log_rabbit('Info', "Started db request server");
 
-$server->process_requests('requestProcessor');
-exit();
 ?>

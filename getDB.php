@@ -1,22 +1,14 @@
 #!/usr/bin/php
 <?php
 
-function getDB($dbName)
+function getDB()
 {
     
     $servername = "localhost";
-    $username = "eric";
-    $password = "Whoop1234!";
+    $username = "deployment";
+    $password = "IT490123";
 
-    $gameDBName = "Game";
-    $regDBName = "login";
-
-
-    if($dbName != "Game" && $dbName != "login")
-    {
-        echo "Db name not recognized";
-        return NULL;
-    }
+    $dbName = "deployment";
     
     try
     {
