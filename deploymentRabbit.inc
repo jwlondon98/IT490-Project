@@ -79,7 +79,7 @@ class deploymentListener
 			$conn->connect();
 			$channel = new AMQPChannel($conn);
 			$exchange = new AMQPExchange($channel);
-      $exchange->setName($this->exchange);
+      $exchange->setName($this->name."Exchange");
       $exchange->setType($this->exchange_type);
 
 			$conn_queue = new AMQPQueue($channel);
@@ -178,8 +178,8 @@ class deploymentClient
 		{
 			$this->auto_delete = $this->machine[$server]["AUTO_DELETE"];
 		}
-		$this->exchange = $this->machine[$server]["EXCHANGE"];
-		$this->queue = $this->machine[$server]["QUEUE"];
+		$this->exchange = $server."Exchange";
+		$this->queue = $server."Queue";
 	}
 
 	function process_response($response)
@@ -235,7 +235,10 @@ class deploymentClient
 
 			$exchange->publish($json_message,$this->routing_key,AMQP_NOPARAM,array('reply_to'=>$callback_queue->getName(),'correlation_id'=>$uid));
       $this->response_queue[$uid] = "waiting";
+      
 			$callback_queue->consume(array($this,'process_response'));
+			
+			
 
 			$response = $this->response_queue[$uid];
 			unset($this->response_queue[$uid]);

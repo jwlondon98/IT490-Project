@@ -1,0 +1,72 @@
+#!/usr/bin/php
+<?php
+    
+    require_once('/usr/local/deployment/path.inc');
+    require_once('/usr/local/deployment/deploymentRabbit.inc');
+    
+    require_once('/usr/local/deployment/getDB.php');
+    
+    
+    function create($package, $version)
+    {
+        //get last update time from DB
+        
+        //add error checking for this
+        
+        $request = array();
+        
+        $request['type'] = "create";
+        $request['packageName'] = $package;
+        $request['version'] = $version;
+        $request['lastUpdate'] = "Yesterday";
+        
+        $client = $GLOBALS['client'];
+        
+        $response = $client->send_request($request);
+        
+        echo json_encode($response).PHP_EOL;
+        
+    }
+    
+    
+    //basic setup
+    $client = new deploymentClient("deploymentServers.ini", "deployment");
+    $db = getDB();
+    
+    if(!isset($db))
+    {
+        echo "Database connection could not be made".PHP_EOL;
+        exit();
+    }
+    
+    $GLOBALS['client'] = $client;
+    $GLOBALS['db'] = $db;
+        
+
+
+    if($argc < 2)
+    {
+        echo "No arguements specified. See the github README for details".PHP_EOL;
+        exit();
+    }
+
+    switch($argv[1])
+    {
+        case "create":
+            create($argv[2], $argv[3]);
+            break;
+            
+        case "fail":
+            echo $argv[1].PHP_EOL;
+            break;
+            
+        case "rollback":
+            echo $argv[1].PHP_EOL;
+            break;
+            
+        case "install":
+            echo $argv[1].PHP_EOL;
+            break;
+    }
+
+?>
