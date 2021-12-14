@@ -22,6 +22,8 @@ class deploymentListener
         if(file_exists("/usr/local/deployment/machine.txt"))
         {
             $this->name = file_get_contents("/usr/local/deployment/machine.txt");
+            
+            $this->name = trim(preg_replace('/\s\s+/', '', $this->name));
         }
         else
         {
@@ -49,6 +51,7 @@ class deploymentListener
 
 	function process_message($msg)
 	{
+                    
 		// send the ack to clear the item from the queue
 		if ($msg->getRoutingKey() !== "*")
     {
@@ -79,7 +82,7 @@ class deploymentListener
 			$conn->connect();
 			$channel = new AMQPChannel($conn);
 			$exchange = new AMQPExchange($channel);
-      $exchange->setName($this->exchange);
+      $exchange->setName($this->name."Exchange");
       $exchange->setType($this->exchange_type);
 
 			$conn_queue = new AMQPQueue($channel);
@@ -87,6 +90,10 @@ class deploymentListener
 			$replykey = $this->routing_key.".response";
 			$conn_queue->bind($exchange->getName(),$replykey);
 			$exchange->publish(json_encode($response),$replykey,AMQP_NOPARAM,array('correlation_id'=>$msg->getCorrelationId()));
+			
+			echo $exchange->getName().PHP_EOL;
+			echo $conn_queue->getName().PHP_EOL;
+			echo $replykey.PHP_EOL;
 
 				return;
 			}
@@ -178,8 +185,8 @@ class deploymentClient
 		{
 			$this->auto_delete = $this->machine[$server]["AUTO_DELETE"];
 		}
-		$this->exchange = $this->machine[$server]["EXCHANGE"];
-		$this->queue = $this->machine[$server]["QUEUE"];
+		$this->exchange = $server."Exchange";
+		$this->queue = $server."Queue";
 	}
 
 	function process_response($response)
