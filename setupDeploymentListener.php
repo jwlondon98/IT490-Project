@@ -103,7 +103,7 @@ fclose($file);
 
 // # set up listener as systemd
 
-copy("./deploymentListener.php", "/usr/local/deployment");
+copy("./deploymentListener.php", "/usr/local/deployment/deploymentListener.php");
 
 shell_exec("sudo bash setupDeploymentListener.bash");
 
