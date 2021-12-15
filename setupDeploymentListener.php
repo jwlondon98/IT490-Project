@@ -26,8 +26,8 @@ shell_exec("sudo apt-get install -y php-ssh2");
 
 // # link deploy script to /usr/local/bin
 
-shell_exec("sudo ln -s deploy /usr/local/bin/deploy");
-copy("./deploy", "usr/local/bin/deploy");
+copy("./deploy", "/usr/local/bin/deploy");
+shell_exec("sudo chmod 777 /usr/local/bin/deploy");
 
 // # ln -l deploy /usr/local/bin/deploy
 
