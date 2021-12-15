@@ -44,7 +44,7 @@ function processCreate($packageName, $version, $lastUpdate)
 {
     $packageFilename = $packageName."_".$version.".tar.gz";
 
-    echo "CREATE:".PHP_EOL.$packageName.PHP_EOL.$version.PHP_EOL.$lastUpdate.PHP_EOL;
+    echo "CREATE:".PHP_EOL.$packageName.PHP_EOL.$version.PHP_EOL;
     //COPY all tracked files to usr/local/deployment/temp
     mkdir("/usr/local/deployment/temp");
     
@@ -114,19 +114,128 @@ function processCreate($packageName, $version, $lastUpdate)
     return array("success" => true);
 }
 
-function processFail($packageName, $version)
+function processInstall($packageName, $version, $path)
 {
-    echo "FAIL:".PHP_EOL.$packageName.PHP_EOL.$version.PHP_EOL;
+
+    $packageFilename = basename($path);
+
+    echo "INSTALL:".PHP_EOL.$packageName.PHP_EOL.$version.PHP_EOL;
+    //COPY all tracked files to usr/local/deployment/temp
+    mkdir("/usr/local/deployment/temp");
+    
+    
+    //tarbal all files into archive
+    //$phar = new PharData("/usr/local/deployment/".$packageFilename);
+    //$phar->buildFromDirectory("/usr/local/deployment/temp");
+    
+
+    $connection = ssh2_connect("192.168.194.81");
+    ssh2_auth_password($connection, "deployment", "deployment12345");
+    
+    if(!is_dir("/usr/local/deployment/installs"))
+    {
+        mkdir("/usr/local/deployment/installs");
+    }
+
+    ssh2_scp_recv($connection, $path, '/usr/local/deployment/installs/'.$packageFilename);
+        
+    echo "/usr/local/deployment/".$packageFilename.PHP_EOL;
+    echo "/var/packages/".$packageFilename.PHP_EOL;
+
+    
+    //delete temp folder
+    //send success to deployment script
+    
+    if(!is_dir("/usr/local/deployment/temp/"))
+    {
+        mkdir("/usr/local/deployment/temp/");
+    }
+
+    
+    $phar = new PharData('/usr/local/deployment/installs/'.$packageFilename);
+    $phar->extractTo("/usr/local/deployment/temp");
+    
+
+    
+    //do the reverse of literally everything to move files to the right spots
+    
+    //first copy all files to new locations
+    
+    $file = @fopen("/usr/local/deployment/temp/tracked.txt", "r");
+    
+    if($file)
+    {
+        while(($buffer = fgets($file, 4096)) !== false)
+        {
+        
+            $buffer = trim(preg_replace('/\s\s+/', '', $buffer));
+            $fileName = basename($buffer);
+            
+            if(is_dir($buffer))
+            {
+                copy_dir("/usr/local/deployment/temp/".$fileName, $buffer);
+            }
+            else
+            {
+                copy("/usr/local/deployment/temp/".$fileName, $buffer);
+            }
+        }
+    }
+    
+    
+    $file = @fopen("/usr/local/deployment/temp/scripts.txt", "r");
+    
+    if($file)
+    {
+        while(($buffer = fgets($file, 4096)) !== false)
+        {
+        
+            $buffer = trim(preg_replace('/\s\s+/', '', $buffer));
+            $fileName = basename($buffer);
+            
+            if(is_file($buffer))
+            {
+                $path_parts = pathinfo($buffer);
+                if($path_parts == "bash")
+                {
+                    shell_exec("bash ".$buffer);
+                }
+                else
+                {
+                    shell_exec("./".$buffer);
+                }
+                
+                echo "Running script ".$buffer.PHP_EOL;
+            }
+
+        }
+    }
+    
+    $file = @fopen("/usr/local/deployment/temp/services.txt", "r");
+    
+    if($file)
+    {
+        while(($buffer = fgets($file, 4096)) !== false)
+        {
+        
+            $buffer = trim(preg_replace('/\s\s+/', '', $buffer));
+            
+            shell_exec("sudo systemctl restart ".$buffer);
+            
+            echo "Restarting service ".$buffer.PHP_EOL;
+
+        }
+    }
+    
+    
+    rrmdir("/usr/local/deployment/temp/");
+    
+    return array("success" => true);
 }
 
 function processRollback($packageName, $version)
 {
     echo "ROLLBACK:".PHP_EOL.$packageName.PHP_EOL.$version.PHP_EOL;
-}
-
-function processInstall($packageName, $version)
-{
-    echo "INSTALL:".PHP_EOL.$packageName.PHP_EOL.$version.PHP_EOL;
 }
 
 
@@ -142,13 +251,11 @@ function requestProcessor($request)
   switch ($request['type'])
   {
     case "create":
-      return processCreate($request['packageName'],$request['version'],$request['lastUpdate']);
-    case "fail":
-      return processFail($request['packageName'],$request['version']);
+      return processCreate($request['packageName'],$request['version']);
     case "rollback":
       return processRollback($request['packageName'],$request['version']);
     case "install":
-      return processInstall($request['packageName'],$request['version']);
+      return processInstall($request['packageName'],$request['version'], $request['path']);
   }
   
   return array("returnCode" => '0', 'message'=>"request type not found");
@@ -162,27 +269,6 @@ $server = new deploymentListener("deploymentConn.ini","deploymentServer");
 $db = getDB();
 
 
-
-/*
-if (!isset($db)) 
-{
-    $logger->log_rabbit('Error', 'Game database in dbServer not connected. Is the server up?');
-    echo 'Game database in dbServer not connected. Is the server up?'.PHP_EOL;
-    $foundDB = false;
-    
-    //exit();
-}
-else
-{
-    $GLOBALS['db'] = $db;
-}
-
-
-if($foundDB == false)
-{
-    exit();
-}
-*/
 
 echo "Started deployment listener".PHP_EOL;
 

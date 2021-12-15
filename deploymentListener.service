@@ -1,0 +1,9 @@
+[Unit]
+Description=RabbitMQ log listener service
+
+[Service]
+ExecStart=/home/eric/Git/IT490-Project/deploymentListener.php
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
