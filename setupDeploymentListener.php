@@ -60,6 +60,7 @@ while (!$hasName)
     echo "Machine Name: ";
     
     $input = rtrim(fgets(STDIN));
+    $machineName=$input;
     
     switch($input)
     {
@@ -79,10 +80,7 @@ while (!$hasName)
         {
             echo "Please use one of the names above".PHP_EOL.PHP_EOL;
         }
-        else
-        {
-            $machineName=$input;
-        }
+
         echo $input.PHP_EOL;
     }
 }
