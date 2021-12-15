@@ -8,7 +8,7 @@ require_once('RabbitLogger/490Logger.php');
 
 require_once('getDB.php');
 
-/*
+
 function doRegister($email,$username,$password)
 {
     $dbLogin = $GLOBALS['dbLogin']; //gets the registation database defined at the bottom of the file
@@ -386,7 +386,7 @@ function getFriends($user_id)
         var_dump($friends);
         return array("success" => $success, "friends" => $friends);  
 }      
-*/
+
 
 
 
