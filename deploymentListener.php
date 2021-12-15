@@ -40,7 +40,7 @@ function copy_dir($source, $dest)
    } 
  }
 
-function processCreate($packageName, $version, $lastUpdate)
+function processCreate($packageName, $version)
 {
     $packageFilename = $packageName."_".$version.".tar.gz";
 
@@ -233,9 +233,9 @@ function processInstall($packageName, $version, $path)
     return array("success" => true);
 }
 
-function processRollback($packageName, $version)
+function processRollback($packageName, $version, $path)
 {
-    echo "ROLLBACK:".PHP_EOL.$packageName.PHP_EOL.$version.PHP_EOL;
+    return processInstall($packageName, "current", $path);
 }
 
 
@@ -253,7 +253,7 @@ function requestProcessor($request)
     case "create":
       return processCreate($request['packageName'],$request['version']);
     case "rollback":
-      return processRollback($request['packageName'],$request['version']);
+      return processRollback($request['packageName'],$request['version'], $request['path']);
     case "install":
       return processInstall($request['packageName'],$request['version'], $request['path']);
   }
