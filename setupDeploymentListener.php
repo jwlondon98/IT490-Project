@@ -73,7 +73,7 @@ while (!$hasName)
         
         if(!$hasName)
         {
-            echo "Please use one of the names above";
+            echo "Please use one of the names above".PHP_EOL.PHP_EOL;
         }
         else
         {
@@ -84,22 +84,22 @@ while (!$hasName)
 
 $file = fopen("/usr/local/deployment/machine.txt", "c");
 fwrite($file, $machineName);
-$fclose($file);
+fclose($file);
 
 
 // # make tracked.txt, services.txt, scripts.txt
 
 $file = fopen("/usr/local/deployment/tracked.txt", "c");
 fwrite($file, "");
-$fclose($file);
+fclose($file);
 
 $file = fopen("/usr/local/deployment/services.txt", "c");
 fwrite($file, "");
-$fclose($file);
+fclose($file);
 
 $file = fopen("/usr/local/deployment/scripts.txt", "c");
 fwrite($file, "");
-$fclose($file);
+fclose($file);
 
 // # set up listener as systemd
 
