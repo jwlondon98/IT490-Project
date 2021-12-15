@@ -60,30 +60,57 @@ while (!$hasName)
     echo "Machine Name: ";
     
     $input = rtrim(fgets(STDIN));
-    $machineName=$input;
+    $machineName
     
     switch($input)
     {
         case "frontendDev":
+            $hasName=true;
+            $machineName = "frontendDev";
+            break;
         case "frontendQA":
+            $hasName=true;
+            $machineName = "frontendQA";
+            break;
         case "frontendProd":
+            $hasName=true;
+            $machineName = "frontendProd";
+            break;
         case "backendDev":
+            $hasName=true;
+            $machineName = "backendDev";
+            break;
         case "backendQA":
+            $hasName=true;
+            $machineName = "backendQA";
+            break;
         case "backendProd":
+            $hasName=true;
+            $machineName = "backendProd";
+            break;
         case "DMZDev":
+            $hasName=true;
+            $machineName = "DMZDev";
+            break;
         case "DMZQA":
+            $hasName=true;
+            $machineName = "DMZQA";
+            break;
         case "DMZProd":
             $hasName=true;
+            $machineName = "DMZProd";
             break;
+
         
         if(!$hasName)
         {
             echo "Please use one of the names above".PHP_EOL.PHP_EOL;
         }
 
-        echo $input.PHP_EOL;
     }
 }
+
+echo "Name: ".$machineName.PHP_EOL;
 
 $file = fopen("/usr/local/deployment/machine.txt", "c");
 fwrite($file, $machineName);
