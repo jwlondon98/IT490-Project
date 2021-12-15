@@ -105,6 +105,8 @@ fclose($file);
 
 copy("./deploymentListener.php", "/usr/local/deployment/deploymentListener.php");
 
+shell_exec("sudo chmod +x /usr/local/deployment/deploymentListener.php");
+
 shell_exec("sudo bash setupDeploymentListener.bash");
 
 
