@@ -6,8 +6,8 @@
     session_start();
     
     // if logged out do nothing
-    if (!isset($_SESSION['username']))
-        return;
+    // if (!isset($_SESSION['username']))
+    //     return;
 
     $username = $_SESSION['username'];
     $userID = $_SESSION['userID'];
