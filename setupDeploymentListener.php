@@ -53,6 +53,7 @@ echo "DMZProd".PHP_EOL.PHP_EOL;
 
 $hasName=false;
 $machineName="";
+$input;
 
 while (!$hasName)
 {
@@ -81,8 +82,8 @@ while (!$hasName)
         else
         {
             $machineName=$input;
-            echo $machineName.PHP_EOL;
         }
+        echo $input.PHP_EOL;
     }
 }
 
