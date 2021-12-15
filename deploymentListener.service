@@ -1,5 +1,5 @@
 [Unit]
-Description=RabbitMQ log listener service
+Description=DeploymentListener service
 
 [Service]
 ExecStart=/home/eric/Git/IT490-Project/deploymentListener.php
