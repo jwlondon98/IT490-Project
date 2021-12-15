@@ -82,22 +82,22 @@ while (!$hasName)
     }
 }
 
-$file = fopen("usr/local/deployment/machine.txt", "w");
+$file = fopen("usr/local/deployment/machine.txt", "c");
 fwrite($file, $machineName);
 $fclose($file);
 
 
 // # make tracked.txt, services.txt, scripts.txt
 
-$file = fopen("usr/local/deployment/tracked.txt", "w");
+$file = fopen("usr/local/deployment/tracked.txt", "c");
 fwrite($file, "");
 $fclose($file);
 
-$file = fopen("usr/local/deployment/services.txt", "w");
+$file = fopen("usr/local/deployment/services.txt", "c");
 fwrite($file, "");
 $fclose($file);
 
-$file = fopen("usr/local/deployment/scripts.txt", "w");
+$file = fopen("usr/local/deployment/scripts.txt", "c");
 fwrite($file, "");
 $fclose($file);
 
