@@ -56,7 +56,9 @@ $machineName="";
 
 while (!$hasName)
 {
-    $input = readline("Machine Name: ");
+    echo "Machine Name: ";
+    
+    $input = rtrim(fgets(STDIN));
     
     switch($input)
     {
