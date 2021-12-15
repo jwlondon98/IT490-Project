@@ -2,7 +2,7 @@
 Description=DeploymentListener service
 
 [Service]
-ExecStart=/home/eric/Git/IT490-Project/deploymentListener.php
+ExecStart=/usr/local/deployment/deploymentListener.php
 Restart=always
 
 [Install]
