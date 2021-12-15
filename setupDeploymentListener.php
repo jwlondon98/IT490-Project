@@ -79,6 +79,7 @@ while (!$hasName)
         else
         {
             $machineName=$input;
+            echo $machineName.PHP_EOL;
         }
     }
 }
