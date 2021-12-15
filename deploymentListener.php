@@ -3,7 +3,7 @@
 require_once('/usr/local/deployment/path.inc');
 require_once('/usr/local/deployment/deploymentRabbit.inc');
 
-require_once('/usr/local/deployment/getDB.php');
+
 
 function copy_dir($source, $dest)
 {
@@ -265,8 +265,6 @@ $server = new deploymentListener("deploymentConn.ini","deploymentServer");
 
 //$foundDB = true;
 
-
-$db = getDB();
 
 
 
