@@ -26,7 +26,7 @@ shell_exec("sudo apt-get install -y php-ssh2");
 
 // # link deploy script to /usr/local/bin
 
-shell_exec("sudo ln -l deploy /usr/local/bin/deploy");
+shell_exec("sudo ln -s deploy /usr/local/bin/deploy");
 
 // # ln -l deploy /usr/local/bin/deploy
 
@@ -82,14 +82,24 @@ while (!$hasName)
     }
 }
 
-file_put_contents("usr/local/deployment/machine.txt", $machineName);
+$file = fopen("usr/local/deployment/machine.txt", "w");
+fwrite($file, $machineName);
+$fclose($file);
 
 
 // # make tracked.txt, services.txt, scripts.txt
 
-file_put_contents("usr/local/deployment/tracked.txt", "");
-file_put_contents("usr/local/deployment/services.txt", "");
-file_put_contents("usr/local/deployment/scripts.txt", "");
+$file = fopen("usr/local/deployment/tracked.txt", "w");
+fwrite($file, "");
+$fclose($file);
+
+$file = fopen("usr/local/deployment/services.txt", "w");
+fwrite($file, "");
+$fclose($file);
+
+$file = fopen("usr/local/deployment/scripts.txt", "w");
+fwrite($file, "");
+$fclose($file);
 
 // # set up listener as systemd
 
