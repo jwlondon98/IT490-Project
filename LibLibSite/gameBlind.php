@@ -10,13 +10,23 @@
 <head>
     <meta charset="utf-8"/ >
     <title>Quote Game</title>
+    
     <style>
-	* {padding: 0; margin: 0}
-	canvas {background: #eee; display: block; margin: 0 auto;}
+        * {
+            padding: 0; 
+            margin: 0
+        }
+        canvas 
+        {
+            display: block; 
+            margin: 0 auto;
+        }
     </style>
-    <link rel="stylesheet" href="content/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="content/css/bootstrap.css" />
-        <link rel="stylesheet" href="content/css/site.css" />
+
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" href="css/bootstrap.css" />
+        <link rel="stylesheet" href="css/site.css" />
         <script src="jquery/jquery.js"></script>
 </head>
 <body>
@@ -29,10 +39,17 @@
     </script>
     <div id='navbar'></div>
 </header>
-<canvas id="gameCanvas" width="1000" height="600"></canvas>
-
-<script id="gameScript" src="quoteGame.js" data-gamemode="blind" data-userid="<?php echo $_SESSION['userID'];?>"></script>
-
+<br />
+        <br />
+        <br />
+        <div style="margin: 0em 5%">
+            <div class="card border-primary mb-3 resp-cont" style="min-height: 50rem;">
+                <div class="card-body flex-group">
+                    <canvas id="gameCanvas" width="1000" height="600"></canvas>
+                    <script id="gameScript" src="quoteGame.js" data-gamemode="blind" data-userid="<?php echo $_SESSION['userID'];?>"></script>
+                </div>
+            </div>
+        </div>
 </script>
 
 </body>

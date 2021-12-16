@@ -124,10 +124,10 @@ function update()
     time = Math.floor(Date.now() / 1000);
     
     
+    nextQuote = "Don't be NOUN . Be NOUN . Be NOUN . Be NOUN . Start VERB";
     if(!nextQuote)
     {
-        
-        nextQuote = "getting"
+        // nextQuote = "getting"
         //alert("Start");
         
             $.ajax({type: "GET", url:"apiClient.php", async:true,
@@ -298,35 +298,39 @@ function drawBaseUI()
     
     //draw generic UI
     
-    ctx.beginPath();
-    ctx.rect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#949494";
-    ctx.fill();
+    // main body border
+    // ctx.beginPath();
+    // ctx.rect(0, 0, canvas.width, canvas.height);
+    // ctx.fillStyle = "#000000";
+    // ctx.fill();
     
-    ctx.beginPath();
-    ctx.rect(5, 5, canvas.width - 10, canvas.height - 10);
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fill();
+    // main body
+    // ctx.beginPath();
+    // ctx.rect(5, 5, canvas.width - 10, canvas.height - 10);
+    // ctx.fillStyle = "#FFFFFF";
+    // ctx.fill();
     
-    ctx.beginPath();
-    ctx.rect(0, canvas.height - 100, canvas.width, 100);
-    ctx.fillStyle = "#949494";
-    ctx.fill();
+    // bottom horizontal frame
+    // ctx.beginPath();
+    // ctx.rect(0, canvas.height - 100, canvas.width, 100);
+    // ctx.fillStyle = "#000000";
+    // ctx.fill();
     
-    ctx.beginPath();
-    ctx.rect(5, canvas.height - 95, canvas.width - 10, 90);
-    ctx.fillStyle = "#A1DCFF";
-    ctx.fill();
+    // bottom horizontal body
+    // ctx.beginPath();
+    // ctx.rect(5, canvas.height - 95, canvas.width - 10, 90);
+    // ctx.fillStyle = "#FFFFFF";
+    // ctx.fill();
     
-    ctx.beginPath();
-    ctx.rect(0, 0, 300, canvas.height);
-    ctx.fillStyle = "#949494";
-    ctx.fill();
+    // ctx.beginPath();
+    // ctx.rect(0, 0, 300, canvas.height);
+    // ctx.fillStyle = "#949494";
+    // ctx.fill();
     
-    ctx.beginPath();
-    ctx.rect(5, 5, 290, canvas.height - 10);
-    ctx.fillStyle = "#A1DCFF";
-    ctx.fill();
+    // ctx.beginPath();
+    // ctx.rect(5, 5, 290, canvas.height - 10);
+    // ctx.fillStyle = "#A1DCFF";
+    // ctx.fill();
     
     //draw player list
     
@@ -337,42 +341,42 @@ function drawBaseUI()
     var timeLeft = roundTime - time;
     
     ctx.beginPath();
-    ctx.font = "30px Arial";
-    ctx.fillStyle = "#A1DCFF"
+    ctx.font = "30px Neucha";
+    ctx.fillStyle = "#000000"
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'left';
-    ctx.fillText("Time: " + timeLeft, canvas.width - 135, 25);
+    ctx.fillText("Time: " + timeLeft, 0, 100);
     ctx.closePath();
     
     
     if(gamemode == "classic")
     {
         ctx.beginPath();
-        ctx.font = "30px Arial";
-        ctx.fillStyle = "#A1DCFF"
+        ctx.font = "30px Neucha";
+        ctx.fillStyle = "#000000"
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
-        ctx.fillText("Classic", (canvas.width) / 2 + 150, 25);
+        ctx.fillText("Classic", 42, 25);
         ctx.closePath();
     }
     else if(gamemode == "chaos")
     {
         ctx.beginPath();
-        ctx.font = "30px Arial";
-        ctx.fillStyle = "#A1DCFF"
+        ctx.font = "30px Neucha";
+    ctx.fillStyle = "#000000"
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
-        ctx.fillText("Chaos", (canvas.width) / 2 + 150, 25);
+        ctx.fillText("Chaos", 42, 25);
         ctx.closePath();
     }
     else if(gamemode == "blind")
     {
         ctx.beginPath();
-        ctx.font = "30px Arial";
-        ctx.fillStyle = "#A1DCFF"
+        ctx.font = "30px Neucha";
+        ctx.fillStyle = "#000000"
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
-        ctx.fillText("Blind", (canvas.width) / 2 + 150, 25);
+        ctx.fillText("Blind", 42, 25);
         ctx.closePath();
     }
 
@@ -382,21 +386,21 @@ function drawBaseUI()
         if(gamemode == "classic" || gamemode == "chaos")
         {
             ctx.beginPath();
-            ctx.font = "30px Arial";
+            ctx.font = "30px Neucha";
             ctx.fillStyle = "#000000"
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'left';
-            ctx.fillText(tokens[showtoken] + ": " + currentInput, 300 + 25, 550);
+            ctx.fillText(tokens[showtoken] + ": " + currentInput, 50, 550);
             ctx.closePath();
         }
         else if(gamemode == "blind")
         {
             ctx.beginPath();
-            ctx.font = "30px Arial";
+            ctx.font = "30px Neucha";
             ctx.fillStyle = "#000000"
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'left';
-            ctx.fillText("WORD: " + currentInput, 300 + 25, 550);
+            ctx.fillText("WORD: " + currentInput, 50, 550);
             ctx.closePath();
         }
     }
@@ -419,22 +423,22 @@ function draw()
             for(var i = 0; i < strList.length; i++)
             {
                 ctx.beginPath();
-                ctx.font = "20px Arial";
-                ctx.fillStyle = "#000000";
+                ctx.font = "20px Neucha";
+                ctx.fillStyle = "#000000"
                 ctx.textBaseline = 'middle';
                 ctx.textAlign = 'center';
-                ctx.fillText(strList[i], (canvas.width) / 2 + 150, canvas.height / 2 - 100 + (30 * i));
+                ctx.fillText(strList[i], (canvas.width) / 2, canvas.height / 2 - 100 + (30 * i));
                 ctx.closePath();
             }
         }
         else if(gamemode == "chaos" || gamemode == "blind")
         {
             ctx.beginPath();
-            ctx.font = "50 Arial";
-            ctx.fillStyle = "#000000";
+            ctx.font = "50px Neucha";
+            ctx.fillStyle = "#000000"
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'center';
-            ctx.fillText("Write Some Words!", (canvas.width) / 2 + 150, canvas.height / 2 - 100);
+            ctx.fillText("Write Some Words!", (canvas.width) / 2, canvas.height / 2 - 100);
             ctx.closePath();
         }
         
@@ -448,21 +452,21 @@ function draw()
         for(var i = 0; i < finishedQuote.length; i++)
         {
             ctx.beginPath();
-            ctx.font = "20px Arial";
+            ctx.font = "20px Neucha";
             ctx.fillStyle = "#000000";
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'center';
-            ctx.fillText(finishedQuote[i], (canvas.width) / 2 + 150, canvas.height / 2 - 100 + (30 * i));
+            ctx.fillText(finishedQuote[i], (canvas.width) / 2, canvas.height / 2 - 100 + (30 * i));
             ctx.closePath();
             
         }
         
             ctx.beginPath();
-            ctx.font = "30px Arial";
+            ctx.font = "30px Neucha";
             ctx.fillStyle = "#000000";
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'center';
-            ctx.fillText("Round Won!", (canvas.width) / 2 + 150, 450);
+            ctx.fillText("Round Won!", (canvas.width) / 2, 450);
             ctx.closePath();
 
     }
@@ -484,7 +488,6 @@ var gamestate = "preround";
 var gametype = "none";
 var canvas = document.getElementById("gameCanvas");
 var ctx = canvas.getContext("2d");
-
 var time = Math.floor(Date.now() / 1000);
 var roundTime = time + 10;
 

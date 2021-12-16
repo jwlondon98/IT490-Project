@@ -25,37 +25,32 @@
 
 <html>
     <head>
-        <link rel="stylesheet" href="content/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="content/css/bootstrap.css" />
-        <link rel="stylesheet" href="content/css/site.css" />
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" href="css/bootstrap.css" />
+        <link rel="stylesheet" href="css/site.css" />
         <script src="jquery/jquery.js"></script>
 </head>
-<body>
-<header>
-    <script>
-        $(document).ready(function()
-        {
-            $('#navbar').load('navbar.php');
-        });
-    </script>
-    <div id='navbar'></div>
-</header>
-
+    <body>
+        <header>
+            <script>
+                $(document).ready(function()
+                {
+                    $('#navbar').load('navbar.php');
+                });
+            </script>
+            <div id='navbar'></div>
+        </header>
         <br/>
         <br/>
-        <br/>
-        <br/>
-        <div class="jumbotron">
-            <div class="text-center">
-                <h1 class="display-2">Player Stats</h1>
-                <h2 class="display-5">Games Played: <?=$gamesPlayed?></h2>
-                <h2 class="display-5">Words Played: <?=$wordsPlayed?></h2>
-                <h2 class="display-5">Games Won: <?=$gamesWon?></h2>
+        <div style="margin: 0em 5%">
+            <div class="card border-primary mb-3 resp-cont" style="min-height: 30rem;">
+                <div class="text-center" style="margin-top:2rem;">
+                    <p style="font-size: 5rem">Player Stats</p>
+                    <p class="rh1">Games Played: <?=$gamesPlayed?></p>
+                    <p class="rh1">Words Played: <?=$wordsPlayed?></p>
+                    <p class="rh1">Games Won: <?=$gamesWon?></p>
+                </div>
             </div>
-
-        <br/>
-        <br/>
-
         </div>
     </body>
 </html>

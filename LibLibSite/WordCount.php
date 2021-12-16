@@ -21,36 +21,39 @@
 ?>
 
 <html>
-<head>
-    <link rel="stylesheet" href="content/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="content/css/bootstrap.css" />
-    <link rel="stylesheet" href="content/css/site.css" />
-    <script src="jquery/jquery.js"></script>
-</head>
-<body>
-<header>
-    <script>
-        $(document).ready(function()
-        {
-            $('#navbar').load('navbar.php');
-        });
-    </script>
-    <div id='navbar'></div>
-</header>
-<div style="margin-left: 2em">
+    <head>
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" href="css/bootstrap.css" />
+        <link rel="stylesheet" href="css/site.css" />
+        <script src="jquery/jquery.js"></script>
+    </head>
+    <body>
+        <header>
+            <script>
+                $(document).ready(function()
+                {
+                    $('#navbar').load('navbar.php');
+                });
+            </script>
+            <div id='navbar'></div>
+        </header>
+        <div style="margin: 0em 5%">
+            <br />
+            <br />
 
-    <h1>Word Count</h1>
-    <br />
-    <h3>Here are your top 10 most used words:</h3>
-    
-    <div class="friendsList">
-        <h5>Word   |   Times Used</h5>
-        <?php foreach ($response['wordList'] as $key => $value):
-            echo("<h5>" . $key . '    |    ' . $value ."</h5>");?>
-        <?php endforeach;?>  
-    </div>
+            <div class="card border-primary mb-3 resp-cont" style="min-height: 50rem;">
+                <div class="card-header flex-group">
+                    <p class="rh1">Word Count</p>
+                </div>
 
-    <br />
-</div>
-</body>
+                <div class="card-body resp-text">
+                    <p class="rh1">Here are your top 10 most used words:</p>
+                    <p class="rh2">Word   |   Times Used</p>
+                    <?php foreach ($response['wordList'] as $key => $value):
+                        echo("<p class='rh2'>" . $key . '    |    ' . $value ."</p>");?>
+                    <?php endforeach;?>  
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

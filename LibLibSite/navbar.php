@@ -5,16 +5,20 @@
     $userID = $_SESSION['userID'];
 ?>
 <html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    </head>
     <body>
         <header>
-            <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-dark bg-primary border-bottom box-shadow mb-3">
-                <div class="container">
-                    <a class="navbar-brand" asp-area="" asp-page="/Index">Lib Lib</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="index.php">LibLib</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                     </button>
-                    <div class="navbar-collapse collapse d-lg-inline-flex flex-lg-row-reverse">
-                        <ul class="navbar-nav flex-grow-1">
+
+                    <div class="collapse navbar-collapse" id="navbarColor01">
+                        <ul class="navbar-nav me-auto">
                             <li class="nav-item">
                                 <a class="nav-link text-light" href="index.php">Home</a>
                             </li>
@@ -38,6 +42,7 @@
                             </li>
                         </ul>
                     </div>
+
                     <div id="conditionalLogin" class="d-flex">
                         <ul class="navbar-nav flex-grow-1 me-lg-2">
                             <?php if (strcmp($username, "") == 0) { ?>

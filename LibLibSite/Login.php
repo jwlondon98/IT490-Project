@@ -45,9 +45,9 @@
 
 <html>
 <head>
-    <link rel="stylesheet" href="content/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="content/css/bootstrap.css" />
-    <link rel="stylesheet" href="content/css/site.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="css/site.css" />
     <script src="jquery/jquery.js"></script>
 </head>
 <body>
