@@ -1,19 +1,5 @@
 <?php
-    require_once('path.inc');
-    require_once('get_host_info.inc');
-    require_once('rabbitMQLib.inc');
-
-    session_start();
-
-    $username = $_SESSION['username'];
-    $userID = $_SESSION['userID'];
-    $sessionToken = $_SESSION['sessionToken'];
-    $sessionTime = $_SESSION['sessionTime'];
-
-    DebugLog("loaded login with username: " . $username);
-    DebugLog("stored session token: " . $sessionToken);
-    
-    ValidateSession($sessionTime);
+    require_once('Common.php');
 
     $messages = array();
 
@@ -48,41 +34,6 @@
             //     DebugLog("MSG: " . $messages[$i]['message']);
         }
     }
-
-    function DebugLog($msg) 
-    {
-        echo "<script>console.log('" . $msg . "');</script>";
-    }
-
-    function ValidateSession($sessionTime)
-    {
-        DebugLog("SESSION TIME: " . $sessionTime);
-
-        // logout if no session time exists 
-        if (strcmp($sessionTime, "") == 0)
-        {
-            DebugLog("empty session time.. logging out..");
-            RedirectToLogout();
-        }
-
-        // logout if session time expired
-        if (time() > $sessionTime)
-        {
-            DebugLog("session expired.. logging out..");
-            RedirectToLogout();
-        }
-        else
-        {
-            $remTime = time() - $sessionTime;
-            DebugLog("session valid.. remaining time: " . $remTime);
-        }
-    }
-
-    function RedirectToLogout()
-    {
-        header('Location: Logout.php');
-        exit();
-    }
 ?>
 
 <html>
@@ -90,9 +41,18 @@
     <link rel="stylesheet" href="content/css/bootstrap.min.css" />
     <link rel="stylesheet" href="content/css/bootstrap.css" />
     <link rel="stylesheet" href="content/css/site.css" />
+    <script src="jquery/jquery.js"></script>
 </head>
 <body>
 <header>
+    <script>
+        $(document).ready(function()
+        {
+            $('#navbar').load('navbar.html');
+        });
+    </script>
+    <div id='navbar'></div>
+</header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Lib Lib</a>

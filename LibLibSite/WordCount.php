@@ -39,24 +39,16 @@
 </header>
 <div style="margin-left: 2em">
     <br />
-    <h1>Achievements</h1>
+    <h1>Word Count</h1>
     <br />
-
-    <h3>Completed</h3>
+    <h3>Here are your top 10 most used words:</h3>
+    
     <div class="friendsList">
         <!-- <?php for ($i = 0; $i < count($friends); $i++):?>
             <p>Friend ID: <?=$friends[$i]['friend_id'] ?>
         <?php endfor;?>     -->
     </div>
 
-    <br />
-
-    <h3>Incomplete</h3>
-    <div class="friendsList">
-        <!-- <?php for ($i = 0; $i < count($friends); $i++):?>
-            <p>Friend ID: <?=$friends[$i]['friend_id'] ?>
-        <?php endfor;?>     -->
-    </div>
     <br />
 </div>
 </body>
