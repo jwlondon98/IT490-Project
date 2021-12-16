@@ -209,10 +209,10 @@ function update()
             gamesPlayed++;
             gamesWon++;
             
-            
+
             
             $.ajax({type: "POST", url:"sendStats.php", async:true, dataType: 'json',
-                data: {"played": gamesPlayed, "won": gamesWon, "words": wordsPlayed, "id": user_id},
+                data: {"played": gamesPlayed, "won": gamesWon, "words": wordsPlayed, "id": user_id, "responseList": response},
             success:function(data)
             {
                 //alert("Good");

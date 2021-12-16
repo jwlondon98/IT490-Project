@@ -42,6 +42,32 @@ else
     $request['wordsPlayed'] = 100;
 }
 
+if(isset($_POST['responseList']))
+{
+    $wordList = array();
+    $responseList = $_POST['responseList'];
+    
+    for($i = 0; $i < count($responseList); $i++)
+    {
+        
+        if(array_key_exists($responseList[$i], $wordList))
+        {
+            $wordList[$responseList[$i]] = $wordList[$responseList[$i]] + 1;
+        }
+        else
+        {
+            $wordList[$responseList[$i]] = 1;
+        }
+    }
+
+    $serialized = serialize($wordList);
+    $request['wordList'] = $serialized;
+}
+else
+{
+    $request['wordList'] = "";
+}
+
 $response = $client->send_request($request);
 
 var_dump($response);
