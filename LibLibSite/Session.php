@@ -1,8 +1,4 @@
 <?php
-    require_once('path.inc');
-    require_once('get_host_info.inc');
-    require_once('rabbitMQLib.inc');
-
     session_start();
 
     $username = $_SESSION['username'];
@@ -13,7 +9,7 @@
     DebugLog("loaded login with username: " . $username);
     DebugLog("user id: " . $userID);
     DebugLog("stored session token: " . $sessionToken);
-    
+
     ValidateSession($sessionTime);
 
     $client = new rabbitMQClient("dbConn.ini","dbServer");

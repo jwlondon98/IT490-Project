@@ -1,5 +1,8 @@
 <?php
-    require_once('Common.php');
+    require_once('path.inc');
+    require_once('get_host_info.inc');
+    require_once('rabbitMQLib.inc');
+    require_once('Session.php');
 
     $friends = array();
 
@@ -40,7 +43,7 @@
     <script>
         $(document).ready(function()
         {
-            $('#navbar').load('navbar.html');
+            $('#navbar').load('navbar.php');
         });
     </script>
     <div id='navbar'></div>

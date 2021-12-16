@@ -1,23 +1,22 @@
+
 <?php
-    // require_once('Common.php');
+    require_once('path.inc');
+    require_once('get_host_info.inc');
+    require_once('rabbitMQLib.inc');
+    require_once('Session.php');
 
-    // $request = array();
-    // $request['type'] = 'getUserStats';
-    // $request['user_id'] = $_SESSION['userID'];
-    // $gamesPlayed = "";
-    // $wordsPlayed = "";
-    // $gamesWon = "";
+    $request = array();
+    $request['type'] = 'getAchievements';
+    $request['user_id'] = $userID;
+    $response = $client->send_request($request);
+    $aches = $response['achievements'];
 
-    // $response = $client->send_request($request);
-    // if ($response['success'] == true)
-    // {
-    //     $stats = $response['stats'];
-    //     $gamesPlayed = $stats['gamesPlayed'];
-    //     $wordsPlayed = $stats['wordsPlayed'];
-    //     $gamesWon = $stats['gamesWon'];
-    // }
-
-    // DebugLog("STATS GET SUCCESS: " . $response['success']);
+    DebugLog("ACH GET SUCCESS: " . $response['success']);
+    DebugLog("ACH COUNT: " . count($aches));
+    DebugLog($aches['play1']);
+    foreach ($aches as $key => $value) {
+        DebugLog("Key: $key  Value: $value");
+    }
 ?>
 
 <html>
@@ -32,7 +31,7 @@
     <script>
         $(document).ready(function()
         {
-            $('#navbar').load('navbar.html');
+            $('#navbar').load('navbar.php');
         });
     </script>
     <div id='navbar'></div>
@@ -44,18 +43,20 @@
 
     <h3>Completed</h3>
     <div class="friendsList">
-        <!-- <?php for ($i = 0; $i < count($friends); $i++):?>
-            <p>Friend ID: <?=$friends[$i]['friend_id'] ?>
-        <?php endfor;?>     -->
+        <?php foreach ($aches as $key => $value):
+            if ($value == 1)
+            echo("<p>" . $key ."</p>");?>
+        <?php endforeach;?>  
     </div>
 
     <br />
 
     <h3>Incomplete</h3>
     <div class="friendsList">
-        <!-- <?php for ($i = 0; $i < count($friends); $i++):?>
-            <p>Friend ID: <?=$friends[$i]['friend_id'] ?>
-        <?php endfor;?>     -->
+        <?php foreach ($aches as $key => $value):
+            if ($value == 0)
+            echo("<p>" . $key ."</p>");?>
+        <?php endforeach;?>  
     </div>
     <br />
 </div>
