@@ -229,7 +229,24 @@ function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon, $resposne
   {
     $userWords = unserialize($userStats["userWords"]);
     
-    foreach($wordList as $value => $key)
+    foreach($wordList as $key => $value)
+    {
+        if(isset($userWords[$key]))
+        {
+            $userWords[$key] = $userWords[$key] + $value;
+        }
+        else
+        {
+            $userWords[$key] = $value;
+        }
+    }
+    $params[':userWords'] = serialize($userWords);
+  }
+  else
+  {
+    $userWords = array();
+    
+    foreach($wordList as $key => $value)
     {
         if(isset($userWords[$key]))
         {
