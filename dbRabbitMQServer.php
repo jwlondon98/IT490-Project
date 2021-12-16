@@ -196,8 +196,10 @@ function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon, $resposne
     //for future note, response list is an array that should just be each word used, no numbers invovled yet
     
     $wordList = unserialize($resposneList);
+    $userWords;
     
     var_dump($wordList);
+    
     
   $dbGame = $GLOBALS['dbGame'];
 
@@ -220,16 +222,37 @@ function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon, $resposne
   $result = $selectStatement->execute($selParams);
   $e = $selectStatement->errorInfo();
   
+  $userStats = $selectStatement->fetch(PDO::FETCH_ASSOC);
+  
+  
+  if($isset($userStats["userWords"]))
+  {
+    $userWords = unserialize($userStats["userWords"]);
+    
+    foreach($wordList as $value => $key)
+    {
+        if(isset($userWords[$key]))
+        {
+            $userWords[$key] = $userWords[$key] + $value;
+        }
+        else
+        {
+            $userWords[$key] = $value;
+        }
+    }
+    $params[':userWords'] = serialize($userWords);
+  }
+  
   if ($selectStatement->rowCount() == 0)
   {
-   	$insertStatement = $dbGame->prepare("INSERT INTO userStats(user_id, gamesPlayed, wordsPlayed, gamesWon) VALUES(:user_id, :gamesPlayed, :wordsPlayed, :gamesWon)");
+   	$insertStatement = $dbGame->prepare("INSERT INTO userStats(user_id, gamesPlayed, wordsPlayed, gamesWon, userWords) VALUES(:user_id, :gamesPlayed, :wordsPlayed, :gamesWon, :userWords)");
   	
   	$result = $insertStatement->execute($params);
   	$e = $insertStatement->errorInfo();
   }
   else
   {
-  	$updateStatement = $dbGame->prepare("UPDATE userStats SET gamesPlayed = gamesPlayed+:gamesPlayed, gamesWon = gamesWon+:gamesWon, wordsPlayed = wordsPlayed+:wordsPlayed WHERE user_id = :user_id");
+  	$updateStatement = $dbGame->prepare("UPDATE userStats SET gamesPlayed = gamesPlayed+:gamesPlayed, gamesWon = gamesWon+:gamesWon, wordsPlayed = wordsPlayed+:wordsPlayed, userWords = :userWords WHERE user_id = :user_id");
   	
   	$result = $updateStatement->execute($params);
   	$e = $updateStatement->errorInfo();
