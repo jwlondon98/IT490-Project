@@ -386,6 +386,161 @@ function getFriends($user_id)
         return array("success" => $success, "friends" => $friends);  
 }       
 
+function getAchievements($user_id)
+{
+  $dbGame = $GLOBALS['dbGame'];
+
+  $params = array();
+  $params[':user_id'] = $user_id;
+ 
+  
+  $stmt = $dbGame->prepare("SELECT gamesPlayed, wordsPlayed, gamesWon, userWords from userStats WHERE user_id = :user_id");
+
+  $r = $stmt->execute($params);
+  $e = $stmt->errorInfo();
+
+  $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+  if($e[0] == "00000")
+  {
+    $message = "User Stats Retrieved";
+    $success = true;
+  }
+  else
+  {
+    $message = "No User Stats Retrieved";
+    $success = false;
+  }
+  	
+	$achievements = array();
+	
+	if($stats["gamesPlayed"] >= 100)
+	{
+        $achievements["play100"] = true;
+        $achievements["play10"] = true;
+        $achievements["play1"] = true;
+	}
+	else if($stats["gamesPlayed"] >= 10)
+	{
+        $achievements["play100"] = false;
+        $achievements["play10"] = true;
+        $achievements["play1"] = true;
+	}
+	else if($stats["gamesPlayed"] >= 1)
+	{
+        $achievements["play100"] = false;
+        $achievements["play10"] = false;
+        $achievements["play1"] = true;
+	}
+	else
+	{
+        $achievements["play100"] = false;
+        $achievements["play10"] = false;
+        $achievements["play1"] = false;
+	}
+	
+	
+	if($stats["gamesWon"] >= 100)
+	{
+        $achievements["win100"] = true;
+        $achievements["win10"] = true;
+        $achievements["win1"] = true;
+	}
+	else if($stats["gamesWon"] >= 10)
+	{
+        $achievements["win100"] = false;
+        $achievements["win10"] = true;
+        $achievements["win1"] = true;
+	}
+	else if($stats["gamesWon"] >= 1)
+	{
+        $achievements["win100"] = false;
+        $achievements["win10"] = false;
+        $achievements["win1"] = true;
+	}
+	else
+	{
+        $achievements["win100"] = false;
+        $achievements["win10"] = false;
+        $achievements["win1"] = false;
+	}
+
+	
+    if($stats["wordsPlayed"] >= 500)
+	{
+        $achievements["words500"] = true;
+        $achievements["words50"] = true;
+	}
+	else if($stats["wordsPlayed"] >= 50)
+	{
+        $achievements["words500"] = false;
+        $achievements["words50"] = true;
+	}
+	else
+	{
+        $achievements["words500"] = false;
+        $achievements["words50"] = false;
+	}
+	
+	$wordList = unserialize($stats["userWords"]);
+	
+	arsort($wordList);
+	$mostUsed = reset($wordList);
+	
+    if($mostUsed >= 100)
+	{
+        $achievements["oneword100"] = true;
+        $achievements["oneword10"] = true;
+	}
+	else if($mostUsed >= 10)
+	{
+        $achievements["oneword100"] = false;
+        $achievements["oneword10"] = true;
+	}
+	else
+	{
+        $achievements["oneword100"] = false;
+        $achievements["oneword10"] = false;
+	}
+	
+  	
+  return array("success" => $success, "message" => $message, "achievements" => $achievements);
+}
+
+function getWordStats($user_id)
+{
+    $dbGame = $GLOBALS['dbGame'];
+
+    $params = array();
+    $params[':user_id'] = $user_id;
+    
+    
+    $stmt = $dbGame->prepare("SELECT userWords from userStats WHERE user_id = :user_id");
+
+    $r = $stmt->execute($params);
+    $e = $stmt->errorInfo();
+
+    $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+    if($e[0] == "00000")
+    {
+        $message = "User Stats Retrieved";
+        $success = true;
+    }
+    else
+    {
+        $message = "No User Stats Retrieved";
+        $success = false;
+    }
+  
+    $wordList = unserialize($stats["userWords"]);
+	
+	arsort($wordList);
+	
+	$wordList = array_slice($wordList, 0, 10);
+	
+	return array("success" => $success, "message" => $message, "wordList" => $wordList);
+	
+	
+}
 
 
 function requestProcessor($request)
@@ -416,6 +571,7 @@ function requestProcessor($request)
     case "leaveLobby":
       return leaveLobby($request['username'], $request['lobbyID']);
       
+      //update with words used
     case "setUserStats":
       return setUserStats($request['user_id'], $request['gamesPlayed'], $request['wordsPlayed'], $request['gamesWon']);
       
@@ -433,6 +589,12 @@ function requestProcessor($request)
       
     case "getFriends":
       return getFriends($request['user_id']);
+      
+    case "getAchievements":
+      return getAchievements($request['user_id']);
+      
+    case "getWordStats":
+      return getWordStats($request['user_id']);
   }
   
   return array("returnCode" => '0', 'message'=>"request type not found");
