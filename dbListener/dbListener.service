@@ -1,0 +1,9 @@
+[Unit]
+Description=Database listener service
+
+[Service]
+ExecStart=/home/aymz/gameit490/IT490-Project/dbListener/dbRabbitMQServer.php
+Restart=always
+
+[Install]
+WantedBy=multi-user.target                               
