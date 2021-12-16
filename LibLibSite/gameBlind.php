@@ -1,0 +1,39 @@
+<?php
+    require_once('path.inc');
+    require_once('get_host_info.inc');
+    require_once('rabbitMQLib.inc');
+    require_once('Session.php');
+?>
+
+
+<html>
+<head>
+    <meta charset="utf-8"/ >
+    <title>Quote Game</title>
+    <style>
+	* {padding: 0; margin: 0}
+	canvas {background: #eee; display: block; margin: 0 auto;}
+    </style>
+    <link rel="stylesheet" href="content/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="content/css/bootstrap.css" />
+        <link rel="stylesheet" href="content/css/site.css" />
+        <script src="jquery/jquery.js"></script>
+</head>
+<body>
+<header>
+    <script>
+        $(document).ready(function()
+        {
+            $('#navbar').load('navbar.php');
+        });
+    </script>
+    <div id='navbar'></div>
+</header>
+<canvas id="gameCanvas" width="1000" height="600"></canvas>
+
+<script id="gameScript" src="quoteGame.js" data-gamemode="blind" data-userid="<?php echo $_SESSION['userID'];?>"></script>
+
+</script>
+
+</body>
+</html>
