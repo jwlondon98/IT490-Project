@@ -195,16 +195,9 @@ function update()
         }
         else if(gamestate == "quotes")
         {
-            roundTime = time + 60;
+            roundTime = time + 15;
             gamestate = "judge"
             currentInput = "";
-        }
-        else if(gamestate == "judge")
-        {
-            roundTime = time + 10;
-            gamestate = "preround"
-            
-            //send stat update to server
             
             gamesPlayed++;
             gamesWon++;
@@ -225,6 +218,17 @@ function update()
 
             }
         });
+            
+            
+        }
+        else if(gamestate == "judge")
+        {
+            roundTime = time + 10;
+            gamestate = "preround"
+            
+            //send stat update to server
+            
+            
             
             //reset all variables
             
@@ -528,25 +532,20 @@ var gamesWon = 0;
 
 canvas.addEventListener('click', function() {onClick(canvas, evt);}, false);
 
-document.addEventListener('keypress', (event) => {
-    
+
+function submit_click (button_id)
+{
+    var textBox = document.getElementById("game_text");
     if(gamestate == "quotes")
     {
-        if(event.keyCode === 13)
-        {
-            response[response.length] = currentInput;
-            currentInput = "";
-            showtoken++;
-            wordsPlayed++;
-        }
-        else
-        {
-            currentInput = currentInput + event.key;
-        }
-    }
-    
+        
+        response[response.length] = document.getElementById("game_text").value;
+        showtoken++;
+        wordsPlayed++;
 
-    
-}, false);
+    }
+
+    document.getElementById("game_text").value = "";
+}
     
 var interval = setInterval(gameLoop, 100);

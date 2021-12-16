@@ -50,7 +50,7 @@
                 <div class="card-footer">
                     <div class="form-group">
                         <label class="card-body" style="font-size: 1.5em">Answer: </label>
-                        <input type="text" style="font-size: 1.5em; width: 20vw";></input>
+                        <input type="text" id="game_text" style="font-size: 1.5em; width: 20vw";></input>
                         <button class="btn btn-dark bg-primary btn-lg" id="1" onClick="submit_click(this.id)">Enter</button>
                     </div>
                 </div>
