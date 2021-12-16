@@ -4,23 +4,20 @@
     require_once('rabbitMQLib.inc');
     require_once('Session.php');
 
-    // $request = array();
-    // $request['type'] = 'getUserStats';
-    // $request['user_id'] = $_SESSION['userID'];
-    // $gamesPlayed = "";
-    // $wordsPlayed = "";
-    // $gamesWon = "";
+    $request = array();
+    $request['type'] = 'getWordStats';
+    $request['user_id'] = $_SESSION['userID'];
 
-    // $response = $client->send_request($request);
-    // if ($response['success'] == true)
-    // {
-    //     $stats = $response['stats'];
-    //     $gamesPlayed = $stats['gamesPlayed'];
-    //     $wordsPlayed = $stats['wordsPlayed'];
-    //     $gamesWon = $stats['gamesWon'];
-    // }
+    $response = $client->send_request($request);
+    DebugLog("WORD COUNT GET SUCCESS: " . $response['success']);
+    if ($response['success'] == true)
+    {
+        DebugLog("WORD COUNT COUNT: " . count($response['wordList']));
+        foreach ($response['wordList'] as $key => $value) {
+            DebugLog($key . '  :  ' . $value);
+        }
 
-    // DebugLog("STATS GET SUCCESS: " . $response['success']);
+    }
 ?>
 
 <html>
@@ -41,15 +38,16 @@
     <div id='navbar'></div>
 </header>
 <div style="margin-left: 2em">
-    <br />
+
     <h1>Word Count</h1>
     <br />
     <h3>Here are your top 10 most used words:</h3>
     
     <div class="friendsList">
-        <!-- <?php for ($i = 0; $i < count($friends); $i++):?>
-            <p>Friend ID: <?=$friends[$i]['friend_id'] ?>
-        <?php endfor;?>     -->
+        <h5>Word   |   Times Used</h5>
+        <?php foreach ($response['wordList'] as $key => $value):
+            echo("<h5>" . $key . '    |    ' . $value ."</h5>");?>
+        <?php endforeach;?>  
     </div>
 
     <br />

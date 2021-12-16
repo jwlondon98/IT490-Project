@@ -12,11 +12,11 @@
     $aches = $response['achievements'];
 
     DebugLog("ACH GET SUCCESS: " . $response['success']);
-    DebugLog("ACH COUNT: " . count($aches));
-    DebugLog($aches['play1']);
-    foreach ($aches as $key => $value) {
-        DebugLog("Key: $key  Value: $value");
-    }
+    // DebugLog("ACH COUNT: " . count($aches));
+    // DebugLog($aches['play1']);
+    // foreach ($aches as $key => $value) {
+    //     DebugLog("Key: $key  Value: $value");
+    // }
 ?>
 
 <html>
