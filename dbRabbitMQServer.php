@@ -225,7 +225,7 @@ function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon, $resposne
   $userStats = $selectStatement->fetch(PDO::FETCH_ASSOC);
   
   
-  if($isset($userStats["userWords"]))
+  if(isset($userStats["userWords"]))
   {
     $userWords = unserialize($userStats["userWords"]);
     
@@ -512,26 +512,37 @@ function getAchievements($user_id)
         $achievements["words50"] = false;
 	}
 	
-	$wordList = unserialize($stats["userWords"]);
-	
-	arsort($wordList);
-	$mostUsed = reset($wordList);
-	
-    if($mostUsed >= 100)
+	if(isset($stats["userWords"]))
 	{
-        $achievements["oneword100"] = true;
-        $achievements["oneword10"] = true;
-	}
-	else if($mostUsed >= 10)
-	{
-        $achievements["oneword100"] = false;
-        $achievements["oneword10"] = true;
+        $wordList = unserialize($stats["userWords"]);
+        
+        arsort($wordList);
+        $mostUsed = reset($wordList);
+        
+        if($mostUsed >= 100)
+        {
+            $achievements["oneword100"] = true;
+            $achievements["oneword10"] = true;
+        }
+        else if($mostUsed >= 10)
+        {
+            $achievements["oneword100"] = false;
+            $achievements["oneword10"] = true;
+        }
+        else
+        {
+            $achievements["oneword100"] = false;
+            $achievements["oneword10"] = false;
+        }
 	}
 	else
 	{
         $achievements["oneword100"] = false;
         $achievements["oneword10"] = false;
+        
 	}
+	
+	
 	
   	
   return array("success" => $success, "message" => $message, "achievements" => $achievements);
