@@ -12,14 +12,14 @@
     <title>Quote Game</title>
     
     <style>
-        * {
+        /* * {
             padding: 0; 
             margin: 0
-        }
+        } */
         canvas 
         {
-            display: block; 
-            margin: 0 auto;
+            /* display: block; 
+            margin: 0 auto; */
         }
     </style>
 
@@ -44,8 +44,15 @@
         <div style="margin: 0em 5%">
             <div class="card border-primary mb-3 resp-cont" style="min-height: 50rem;">
                 <div class="card-body flex-group">
-                    <canvas id="gameCanvas" width="1000" height="600"></canvas>
+                    <canvas id="gameCanvas" width="1000vw" height="600vh"></canvas>
                     <script id="gameScript" src="quoteGame.js" data-gamemode="chaos" data-userid="<?php echo $_SESSION['userID'];?>"></script>
+                </div>
+                <div class="card-footer">
+                    <div class="form-group">
+                        <label class="card-body" style="font-size: 1.5em">Answer: </label>
+                        <input type="text" style="font-size: 1.5em; width: 20vw";></input>
+                        <button class="btn btn-dark bg-primary btn-lg" id="1" onClick="submit_click(this.id)">Enter</button>
+                    </div>
                 </div>
             </div>
         </div>

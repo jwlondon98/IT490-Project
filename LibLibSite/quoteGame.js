@@ -434,7 +434,7 @@ function draw()
         else if(gamemode == "chaos" || gamemode == "blind")
         {
             ctx.beginPath();
-            ctx.font = "50px Neucha";
+            ctx.font = "5vw Neucha";
             ctx.fillStyle = "#000000"
             ctx.textBaseline = 'middle';
             ctx.textAlign = 'center';

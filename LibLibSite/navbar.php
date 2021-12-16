@@ -22,8 +22,13 @@
                             <li class="nav-item">
                                 <a class="nav-link text-light" href="index.php">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" href="Play.php">Play</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="Play.php" role="button" aria-haspopup="true" aria-expanded="false">Play</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="game.php">Classic</a>
+                                    <a class="dropdown-item" href="gameChaos.php">Chaos</a>
+                                    <a class="dropdown-item" href="gameBlind.php">Blind</a>
+                                </div>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-light" href="Friends.php">Friends</a>
