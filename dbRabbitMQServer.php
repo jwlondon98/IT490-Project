@@ -581,7 +581,7 @@ function requestProcessor($request)
       
       //update with words used
     case "setUserStats":
-      return setUserStats($request['user_id'], $request['gamesPlayed'], $request['wordsPlayed'], $request['gamesWon']);
+      return setUserStats($request['user_id'], $request['gamesPlayed'], $request['wordsPlayed'], $request['gamesWon'], $request['wordList']);
       
     case "getUserStats":
       return getUserStats($request['user_id']);
