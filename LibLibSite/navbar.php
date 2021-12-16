@@ -22,6 +22,9 @@
                                 <a class="nav-link text-light" href="Play.php">Play</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link text-light" href="Matching.php">Matching</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-light" href="Friends.php">Friends</a>
                             </li>
                             <li class="nav-item">
