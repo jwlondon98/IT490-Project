@@ -191,8 +191,14 @@ function leaveLobby($username, $lobbyID)
     return array("didLeave" => $didLeave);
 }
 
-function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon)
+function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon, $resposneList)
 {
+    //for future note, response list is an array that should just be each word used, no numbers invovled yet
+    
+    $wordList = unserialize($resposneList);
+    
+    var_dump($wordList);
+    
   $dbGame = $GLOBALS['dbGame'];
 
   $params = array();
@@ -200,6 +206,7 @@ function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon)
   $params[':gamesPlayed'] = $gamesPlayed;
   $params[':wordsPlayed'] = $wordsPlayed;
   $params[':gamesWon'] = $gamesWon;
+  
   $selParams = array();
   $selParams[':user_id'] = $user_id;
   
@@ -207,6 +214,7 @@ function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon)
   echo "\nSET gamesPlayed: " . $gamesPlayed .  "\n";
   echo "\nSET wordsPlayed: " . $wordsPlayed .  "\n";
   echo "\nSET gamesWon: " . $gamesWon .  "\n";
+  
   
   $selectStatement = $dbGame->prepare("SELECT * FROM userStats where user_id = :user_id");
   $result = $selectStatement->execute($selParams);
