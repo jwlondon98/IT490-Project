@@ -22,6 +22,8 @@ function copy_dir($source, $dest)
 
 }
 
+echo "Installing php-ssh2. Please wait, this may take a few minutes".PHP_EOL;
+
 shell_exec("sudo apt-get install -y php-ssh2");
 
 // # link deploy script to /usr/local/bin
