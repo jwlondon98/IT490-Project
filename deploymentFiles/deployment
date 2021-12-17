@@ -7,9 +7,30 @@
     require_once('/usr/local/deployment/getDB.php');
     
     
-    function create($package, $version)
+    function create($serverName, $package, $version)
     {
-        //get last update time from DB
+        switch($serverName)
+        {
+            case "deployment":
+            case "frontendDev":
+            case "frontendQA":
+            case "frontendProd":
+            case "backendDev":
+            case "backendQA":
+            case "backendProd":
+            case "DMZDev":
+            case "DMZQA":
+            case "DMZProd":
+                break;
+            default:
+                echo $serverName." not found, please only used predefined server names".PHP_EOL;
+                exit();
+        }
+    
+    
+    //basic setup
+        echo "Connecting to server ".$serverName.PHP_EOL;
+        $client = new deploymentClient("deploymentServers.ini", $serverName);
         
         //add error checking for this
         
@@ -18,19 +39,423 @@
         $request['type'] = "create";
         $request['packageName'] = $package;
         $request['version'] = $version;
-        $request['lastUpdate'] = "Yesterday";
-        
-        $client = $GLOBALS['client'];
+    
         
         $response = $client->send_request($request);
         
-        echo json_encode($response).PHP_EOL;
+        if($response["success"] == false)
+        {
+            echo "Response from deploymentServer failed".PHP_EOL;
+            exit();
+        }
+        
+        
+        $db = $GLOBALS['db'];
+        //array where all parameters to input into the SQL request go. 
+        //Starting each with a : is not neccessary, but helps differentiate the SQL variables from the PHP ones
+        $params = array();  
+        $params[':package'] = $package;
+        $params[':version'] = $version;
+        $params[':path'] = "/usr/local/packages/".$package."_".$version.".tar.gz";
+        $params[':status'] = "untested";
+    
+        
+        //builds the SQL statement, the syntax should be exactly the same as what you are used to
+        //Note how the values in the $params array are in the SQL statement
+        $stmt = $db->prepare("INSERT INTO Package(name, version, path, status) VALUES(:package, :version, :path, :status)");
+
+    
+        //executes the prepared statement, make sure to input the $params array, or else the call won't work
+        $r = $stmt->execute($params);
+        
+        //$e gets populated with any SQL error info from the database
+        $e = $stmt->errorInfo();
+        
+        $message;
+        $success;
+        
+        if($e[0] == "00000") //error code for no errors
+        {
+            $message = "Package sucessfully created";
+            $success = true;
+        }
+        else if($e[0] == "23000") //error code for duplicate entry
+        {
+            $message = "Package already exists";
+            $success = false;
+        }
+        else //if we get another error we haven't accounted for
+        {
+            $message = "Something isn't working, try again later";
+            $success = false;
+        }
+        
+        //returns true if the registration worked, false otherwise, and a message saying what happened
+
+        
+        echo "Success: ".$success.PHP_EOL;
+        echo "Message: ".$message.PHP_EOL;
+        
+    }
+    
+    function status($statusChange, $package, $version)
+    {
+        //get last update time from DB
+        
+        //add error checking for this
+        
+        
+        $db = $GLOBALS['db'];
+        //array where all parameters to input into the SQL request go. 
+        //Starting each with a : is not neccessary, but helps differentiate the SQL variables from the PHP ones
+        $params = array();  
+        $params[':package'] = $package;
+        $params[':version'] = $version;
+        
+        if($statusChange == "fail")
+        {
+            $params[':status'] = "failed";
+        }
+        else if($statusChange == "pass")
+        {
+            $params[':status'] = "passed";
+        }
+       
+    
+        
+        //builds the SQL statement, the syntax should be exactly the same as what you are used to
+        //Note how the values in the $params array are in the SQL statement
+        $stmt = $db->prepare("UPDATE Package SET status = :status WHERE name = :package AND version = :version");
+
+    
+        //executes the prepared statement, make sure to input the $params array, or else the call won't work
+        $r = $stmt->execute($params);
+        
+        //$e gets populated with any SQL error info from the database
+        $e = $stmt->errorInfo();
+        
+        $message;
+        $success;
+        
+        if($e[0] == "00000") //error code for no errors
+        {
+            $message = "Package status changed";
+            $success = "true";
+        }
+        else //if we get another error we haven't accounted for
+        {
+            $message = "Something isn't working, try again later";
+            $success = "false";
+        }
+        
+        //returns true if the registration worked, false otherwise, and a message saying what happened
+
+        
+        echo "Success: ".$success.PHP_EOL;
+        echo "Message: ".$message.PHP_EOL;
+        if($e[0] != "00000")
+        {
+            echo "Error: ".$e[0].PHP_EOL;
+        }
         
     }
     
     
+    function rollback($serverName, $package)
+    {
+        $version = "current";
+    
+        switch($serverName)
+        {
+            case "deployment":
+            case "frontendDev":
+            case "frontendQA":
+            case "frontendProd":
+            case "backendDev":
+            case "backendQA":
+            case "backendProd":
+            case "DMZDev":
+            case "DMZQA":
+            case "DMZProd":
+                break;
+            default:
+                echo $serverName." not found, please only used predefined server names".PHP_EOL;
+                exit();
+        }
+    
+    
     //basic setup
-    $client = new deploymentClient("deploymentServers.ini", "deployment");
+        echo "Connecting to server ".$serverName.PHP_EOL;
+        $client = new deploymentClient("deploymentServers.ini", $serverName);
+        
+        //add error checking for this
+        
+
+        
+        $db = $GLOBALS['db'];
+        $request = array();
+        $request['type'] = "install";
+        $request['packageName'] = $package;
+        $request['version'] = $version;
+
+        if($version == "current")
+        {
+            $params = array();  
+            $params[':package'] = $package;
+    
+        
+            //builds the SQL statement, the syntax should be exactly the same as what you are used to
+            //Note how the values in the $params array are in the SQL statement
+            $stmt = $db->prepare("SELECT version, path, status FROM Package WHERE name = :package ORDER BY version * 1 DESC");
+            
+            
+            $r = $stmt->execute($params);
+            
+            //$e gets populated with any SQL error info from the database
+            $e = $stmt->errorInfo();
+            
+            
+            
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            //var_dump($result);
+
+            for($i = 0; $i < count($result); $i++)
+            {
+                if($result[$i]['status'] == "passed")
+                {
+                    $request['path'] = $result[$i]["path"];
+                    $request['version'] = $result[$i]["version"];
+                    break;
+                }
+                
+                
+            }
+
+            
+            
+            
+            if(!isset($request['path']))
+            {
+                echo "No current file to install".PHP_EOL;
+                exit();
+            }
+            
+                    
+        
+            $message;
+            $success;
+            
+            if($e[0] == "00000") //error code for no errors
+            {
+                $message = "Package sucessfully found";
+                $success = true;
+            }
+            else //if we get another error we haven't accounted for
+            {
+                $message = "Something isn't working, try again later";
+                $success = false;
+                exit();
+            }
+
+        }
+        
+
+        
+        $response = $client->send_request($request);
+        
+        if($response["success"] == false)
+        {
+            echo "Response from server failed".PHP_EOL;
+            exit();
+        }
+    
+    
+
+        
+        echo var_dump($response).PHP_EOL;
+        
+    }
+    
+    function install($serverName, $package, $version)
+    {
+        switch($serverName)
+        {
+            case "deployment":
+            case "frontendDev":
+            case "frontendQA":
+            case "frontendProd":
+            case "backendDev":
+            case "backendQA":
+            case "backendProd":
+            case "DMZDev":
+            case "DMZQA":
+            case "DMZProd":
+                break;
+            default:
+                echo $serverName." not found, please only used predefined server names".PHP_EOL;
+                exit();
+        }
+    
+    
+    //basic setup
+        echo "Connecting to server ".$serverName.PHP_EOL;
+        $client = new deploymentClient("deploymentServers.ini", $serverName);
+        
+        //add error checking for this
+        
+
+        
+        $db = $GLOBALS['db'];
+        $request = array();
+        $request['type'] = "install";
+        $request['packageName'] = $package;
+        $request['version'] = $version;
+
+        if($version == "current")
+        {
+            $params = array();  
+            $params[':package'] = $package;
+    
+        
+            //builds the SQL statement, the syntax should be exactly the same as what you are used to
+            //Note how the values in the $params array are in the SQL statement
+            $stmt = $db->prepare("SELECT version, path, status FROM Package WHERE name = :package ORDER BY version * 1 DESC");
+            
+            
+            $r = $stmt->execute($params);
+            
+            //$e gets populated with any SQL error info from the database
+            $e = $stmt->errorInfo();
+            
+            
+            
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            
+            if(strpos($serverName, "Prod") !== false)
+            {
+                for($i = 0; $i < count($result); $i++)
+                {
+                    if($request[$i]['status'] == "passed")
+                    {
+                        $request['path'] = $result[$i]["path"];
+                        $request['version'] = $result[$i]["version"];
+                        break;
+                    }
+                    
+                    
+                }
+
+            }
+            else
+            {
+                $request['path'] = $result[0]["path"];
+                $request['version'] = $result[0]["version"];
+            }
+            
+            
+            if(!isset($request['path']))
+            {
+                echo "No current file to install".PHP_EOL;
+                exit();
+            }
+            
+                    
+        
+            $message;
+            $success;
+            
+            if($e[0] == "00000") //error code for no errors
+            {
+                $message = "Package sucessfully found";
+                $success = true;
+            }
+            else //if we get another error we haven't accounted for
+            {
+                $message = "Something isn't working, try again later";
+                $success = false;
+                exit();
+            }
+
+        }
+        else
+        {
+            $params = array();  
+            $params[':package'] = $package;
+            $params[':version'] = $version;
+        
+            
+            //builds the SQL statement, the syntax should be exactly the same as what you are used to
+            //Note how the values in the $params array are in the SQL statement
+            $stmt = $db->prepare("SELECT path, status FROM Package WHERE name = :package AND version = :version");
+            
+            
+            $r = $stmt->execute($params);
+            
+            //$e gets populated with any SQL error info from the database
+            $e = $stmt->errorInfo();
+            
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            
+            
+            if($result && isset($result["path"]))
+            {
+                 if(strpos($serverName, "Prod") !== false && $result["status"] == "failed")
+                 {
+                    echo("Cannot install failed package on Production server").PHP_EOL;
+                    exit();
+                 }
+                
+                $request['path'] = $result["path"];
+            }
+            else
+            {
+                echo "Package not found in database, please check the name and version".PHP_EOL;
+                exit();
+            }
+            
+            if($e[0] == "00000") //error code for no errors
+            {
+                $message = "Package sucessfully found";
+                $success = true;
+            }
+            else //if we get another error we haven't accounted for
+            {
+                $message = "Something isn't working, try again later";
+                $success = false;
+                exit();
+            }
+        }
+
+        
+        $response = $client->send_request($request);
+        
+        if($response["success"] == false)
+        {
+            echo "Response from server failed".PHP_EOL;
+            exit();
+        }
+    
+    
+
+        
+        echo var_dump($response).PHP_EOL;
+        
+    }
+    
+
+
+    if($argc < 2)
+    {
+        echo "No arguements specified. See the github README for details".PHP_EOL;
+        exit();
+    }
+    
+    
+
     $db = getDB();
     
     if(!isset($db))
@@ -39,34 +464,33 @@
         exit();
     }
     
-    $GLOBALS['client'] = $client;
     $GLOBALS['db'] = $db;
         
-
-
-    if($argc < 2)
-    {
-        echo "No arguements specified. See the github README for details".PHP_EOL;
-        exit();
-    }
 
     switch($argv[1])
     {
         case "create":
-            create($argv[2], $argv[3]);
+            create($argv[2], $argv[3], $argv[4]);
             break;
             
         case "fail":
-            echo $argv[1].PHP_EOL;
+            status($argv[1], $argv[2], $argv[3]);
+            break;
+            
+        case "pass":
+            status($argv[1], $argv[2], $argv[3]);
             break;
             
         case "rollback":
-            echo $argv[1].PHP_EOL;
+            rollback($argv[2], $argv[3]);
             break;
             
         case "install":
-            echo $argv[1].PHP_EOL;
+            install($argv[2], $argv[3], $argv[4]);
             break;
+            
+        default:
+            echo "Command type not found".PHP_EOL;
     }
 
 ?>
