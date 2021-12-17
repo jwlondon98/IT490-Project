@@ -258,6 +258,8 @@ function setUserStats($user_id, $gamesPlayed, $wordsPlayed, $gamesWon, $resposne
         }
     }
     $params[':userWords'] = serialize($userWords);
+    var_dump($params[':userWords']);
+    
   }
   
   if ($selectStatement->rowCount() == 0)
