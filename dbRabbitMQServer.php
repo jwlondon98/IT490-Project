@@ -4,8 +4,6 @@ require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 
-require_once('RabbitLogger/490Logger.php');
-
 require_once('getDB.php');
 
 function doRegister($email,$username,$password)
@@ -57,7 +55,6 @@ function doRegister($email,$username,$password)
 function doLogin($username,$password)
 {
     $dbLogin = $GLOBALS['dbLogin'];
-    $logger = $GLOBALS['logger'];
     
     $login = false;
     $sessionToken;
@@ -74,7 +71,7 @@ function doLogin($username,$password)
     
     if($e[0] != "00000")
     {
-        $logger->log_rabbit('Error', 'Database call returned error');
+        echo 'Database call returned error';
     }
     
     //gets the result of the SQL request, and populates them into $result as an associative array
@@ -116,7 +113,7 @@ function doLogin($username,$password)
             
             if($e[0] != "00000")
             {
-                $logger->log_rabbit('Error', 'Session could not be set, try again later');
+                echo 'Error', 'Session could not be set, try again later'.PHP_EOL;
                 $login = false;
             }
             
@@ -664,14 +661,12 @@ function requestProcessor($request)
 
 
 
-$logger = new rabbitLogger("RabbitLogger/logger.ini", "testListener");
 $server = new rabbitMQServer("dbConn.ini","dbServer");
 
 $foundGame = true;
 $foundLobby = true;
 
 $GLOBALS['test'] = "Test";
-$GLOBALS['logger'] = $logger;
 
 
 $dbGame = getDB("Game");
@@ -681,7 +676,6 @@ $dbLogin = getDB("login");
 
 if (!isset($dbGame)) 
 {
-    $logger->log_rabbit('Error', 'Game database in dbServer not connected. Is the server up?');
     echo 'Game database in dbServer not connected. Is the server up?'.PHP_EOL;
     $foundGame = false;
     
@@ -694,7 +688,6 @@ else
 
 if(!isset($dbLogin))
 {
-    $logger->log_rabbit('Error', 'Login database not working in dbServer not connected. Is the server up?');
     echo 'Login database in dbServer not connected. Is the server up?'.PHP_EOL;
     //exit();
     
@@ -711,7 +704,7 @@ if($foundLobby == false || $foundGame == false)
 }
 
 echo "Started db request server";
-$logger->log_rabbit('Info', "Started db request server");
+
 
 $server->process_requests('requestProcessor');
 exit();
