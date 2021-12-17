@@ -2,7 +2,7 @@
 Description=Database listener service
 
 [Service]
-ExecStart=/home/eric/Git/IT490-Project/dbRabbitMQServer.php
+ExecStart=/home/jordan/projects/IT490-Project/dbRabbitMQServer.php
 Restart=always
 
 [Install]
