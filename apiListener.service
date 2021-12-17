@@ -1,0 +1,10 @@
+[Unit]
+Description=API listener service
+
+[Service]
+ExecStart=/home/aymz/gameit490/IT490-Project/apiRabbitMQServer.php
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
