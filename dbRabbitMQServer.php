@@ -94,7 +94,7 @@ function doLogin($username,$password)
             $sessionToken = session_create_id();
             
             //gets the current unix timestamp for validation later
-            $sessionTime = time() + 180;
+            $sessionTime = time() + 1800;
             
             $login = true;
             
