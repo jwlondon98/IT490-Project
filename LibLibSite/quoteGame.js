@@ -124,7 +124,7 @@ function update()
     time = Math.floor(Date.now() / 1000);
     
     
-    nextQuote = "Don't be NOUN . Be NOUN . Be NOUN . Be NOUN . Start VERB";
+     nextQuote = "Don't be NOUN . Be NOUN . Be NOUN . Be NOUN . Start VERB";
     if(!nextQuote)
     {
         // nextQuote = "getting"
@@ -195,31 +195,9 @@ function update()
         }
         else if(gamestate == "quotes")
         {
-            roundTime = time + 15;
+            roundTime = time + 60;
             gamestate = "judge"
             currentInput = "";
-            
-            gamesPlayed++;
-            gamesWon++;
-            
-
-            
-            $.ajax({type: "POST", url:"sendStats.php", async:true, dataType: 'json',
-                data: {"played": gamesPlayed, "won": gamesWon, "words": wordsPlayed, "id": user_id, "responseList": response},
-            success:function(data)
-            {
-                //alert("Good");
-                
-                
-            },
-            failure:function(data)
-            {
-                //alert("Bad");
-
-            }
-        });
-            
-            
         }
         else if(gamestate == "judge")
         {
@@ -228,6 +206,10 @@ function update()
             
             //send stat update to server
             
+            gamesPlayed++;
+            gamesWon++;
+            
+
             
             
             //reset all variables
@@ -293,6 +275,21 @@ function update()
                 }
                 
             }
+            
+            $.ajax({type: "POST", url:"sendStats.php", async:true, dataType: 'json',
+                data: {"played": gamesPlayed, "won": gamesWon, "words": wordsPlayed, "id": user_id, "responseList": response},
+            success:function(data)
+            {
+                alert("Good");
+                
+                
+            },
+            failure:function(data)
+            {
+                alert("Bad");
+
+            }
+        });
         }
 }
 
